@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/Users/kapasifulop/Documents/projektek/localized-routes-plus/phpunit.xml" tests="12" assertions="42" errors="0" failures="0" skipped="0" time="0.081514">
+    <testsuite name="LocalizedRoutesPlus Test Suite" tests="12" assertions="42" errors="0" failures="0" skipped="0" time="0.081514">
+      <testsuite name="Tests\Feature\LocalizedRoutesTest" file="tests/Feature/LocalizedRoutesTest.php" tests="12" assertions="42" errors="0" failures="0" skipped="0" time="0.081514">
+        <testcase name="it set localized route name" file="tests/Feature/LocalizedRoutesTest.php::it set localized route name" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="1" time="0.051345"/>
+        <testcase name="it works with PATCH routes" file="tests/Feature/LocalizedRoutesTest.php::it works with PATCH routes" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="2" time="0.003011"/>
+        <testcase name="resource routes create routes for all locales" file="tests/Feature/LocalizedRoutesTest.php::resource routes create routes for all locales" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="14" time="0.004776"/>
+        <testcase name="it works with Route::any" file="tests/Feature/LocalizedRoutesTest.php::it works with Route::any" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="2" time="0.002532"/>
+        <testcase name="it works with Route::match" file="tests/Feature/LocalizedRoutesTest.php::it works with Route::match" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="3" time="0.002445"/>
+        <testcase name="it works with POST routes" file="tests/Feature/LocalizedRoutesTest.php::it works with POST routes" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="4" time="0.002432"/>
+        <testcase name="it works with different call order" file="tests/Feature/LocalizedRoutesTest.php::it works with different call order" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="2" time="0.002413"/>
+        <testcase name="resource routes with custom names create routes for all locales" file="tests/Feature/LocalizedRoutesTest.php::resource routes with custom names create routes for all locales" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="4" time="0.002594"/>
+        <testcase name="it works with DELETE routes" file="tests/Feature/LocalizedRoutesTest.php::it works with DELETE routes" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="2" time="0.002456"/>
+        <testcase name="it works with PUT routes" file="tests/Feature/LocalizedRoutesTest.php::it works with PUT routes" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="3" time="0.002467"/>
+        <testcase name="it creates routes for all locales" file="tests/Feature/LocalizedRoutesTest.php::it creates routes for all locales" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="4" time="0.002493"/>
+        <testcase name="it can chain localized method after Route::get" file="tests/Feature/LocalizedRoutesTest.php::it can chain localized method after Route::get" class="Tests\Feature\LocalizedRoutesTest" classname="Tests.Feature.LocalizedRoutesTest" assertions="1" time="0.002550"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
