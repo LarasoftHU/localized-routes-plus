@@ -2,11 +2,9 @@
 
 namespace LarasoftHU\LocalizedRoutesPlus;
 
+use LarasoftHU\LocalizedRoutesPlus\Commands\LocalizedRoutesPlusCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use LarasoftHU\LocalizedRoutesPlus\Commands\LocalizedRoutesPlusCommand;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Routing\Route as RouteInstance;
 
 class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
 {
@@ -23,7 +21,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     public function register()
     {
         parent::register();
-        
+
         // Lecseréljük a router instance-t a saját LocalizedRouter-ünkre
         $this->app->singleton('router', function ($app) {
             return new LocalizedRouter($app['events'], $app);

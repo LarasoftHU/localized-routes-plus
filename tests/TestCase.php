@@ -23,12 +23,12 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
-                
+
         // Set up localized routes configuration
         $app['config']->set('localized-routes-plus.locales', ['en', 'hu']);
         $app['config']->set('localized-routes-plus.default_locale', 'en');
-        
+
         // Set the application locale
         $app['config']->set('app.locale', 'en');
     }
-} 
+}

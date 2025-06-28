@@ -25,17 +25,17 @@ it('creates routes for all locales', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     // Ellenőrizzük, hogy létezik az en.example route
     expect($routes->hasNamedRoute('en.example'))->toBeTrue();
-    
+
     // Ellenőrizzük, hogy létezik a hu.example route is
     expect($routes->hasNamedRoute('hu.example'))->toBeTrue();
-    
+
     // Ellenőrizzük, hogy mindkét route ugyanarra az URI-ra mutat
     $enRoute = $routes->getByName('en.example');
     $huRoute = $routes->getByName('hu.example');
-    
+
     expect($enRoute->uri())->toBe($huRoute->uri());
     expect($enRoute->uri())->toBe('example');
 });
@@ -47,10 +47,10 @@ it('works with different call order', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     // Ellenőrizzük, hogy létezik az en.reverse route
     expect($routes->hasNamedRoute('en.reverse'))->toBeTrue();
-    
+
     // Ellenőrizzük, hogy létezik a hu.reverse route is
     expect($routes->hasNamedRoute('hu.reverse'))->toBeTrue();
 });
@@ -63,13 +63,13 @@ it('works with POST routes', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.submit'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.submit'))->toBeTrue();
-    
+
     $enRoute = $routes->getByName('en.submit');
     $huRoute = $routes->getByName('hu.submit');
-    
+
     expect($enRoute->methods())->toBe(['POST']);
     expect($huRoute->methods())->toBe(['POST']);
 });
@@ -82,10 +82,10 @@ it('works with PUT routes', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.update'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.update'))->toBeTrue();
-    
+
     $enRoute = $routes->getByName('en.update');
     expect($enRoute->methods())->toBe(['PUT']);
 });
@@ -98,7 +98,7 @@ it('works with PATCH routes', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.patch'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.patch'))->toBeTrue();
 });
@@ -111,7 +111,7 @@ it('works with DELETE routes', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.delete'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.delete'))->toBeTrue();
 });
@@ -124,10 +124,10 @@ it('works with Route::match', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.multi'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.multi'))->toBeTrue();
-    
+
     $enRoute = $routes->getByName('en.multi');
     expect($enRoute->methods())->toBe(['GET', 'POST', 'HEAD']);
 });
@@ -140,7 +140,7 @@ it('works with Route::any', function () {
 
     $router = app('router');
     $routes = $router->getRoutes();
-    
+
     expect($routes->hasNamedRoute('en.any'))->toBeTrue();
     expect($routes->hasNamedRoute('hu.any'))->toBeTrue();
 });
@@ -148,16 +148,16 @@ it('works with Route::any', function () {
 test('resource routes create routes for all locales', function () {
     // Létrehozunk egy lokalizált resource route-ot
     Route::resource('posts', 'PostController')->localized()->names('posts');
-    
+
     // Ellenőrizzük, hogy mindkét locale-hoz létrejöttek a route-ok
     $routes = Route::getRoutes();
-    
+
     $routeNames = [];
     foreach ($routes as $route) {
         if ($route->getName()) {
             $routeNames[] = $route->getName();
         }
-    }   
+    }
     // Default locale (en) routes
     expect($routeNames)->toContain('en.posts.index');
     expect($routeNames)->toContain('en.posts.create');
@@ -166,7 +166,7 @@ test('resource routes create routes for all locales', function () {
     expect($routeNames)->toContain('en.posts.edit');
     expect($routeNames)->toContain('en.posts.update');
     expect($routeNames)->toContain('en.posts.destroy');
-    
+
     // Hungarian locale routes
     expect($routeNames)->toContain('hu.posts.index');
     expect($routeNames)->toContain('hu.posts.create');
@@ -175,7 +175,6 @@ test('resource routes create routes for all locales', function () {
     expect($routeNames)->toContain('hu.posts.edit');
     expect($routeNames)->toContain('hu.posts.update');
     expect($routeNames)->toContain('hu.posts.destroy');
-
 
 });
 
@@ -187,21 +186,21 @@ test('resource routes with custom names create routes for all locales', function
             'create' => 'articles.new',
         ])
         ->localized();
-    
+
     // Ellenőrizzük, hogy mindkét locale-hoz létrejöttek a route-ok
     $routes = Route::getRoutes();
-    
+
     $routeNames = [];
     foreach ($routes as $route) {
         if ($route->getName()) {
             $routeNames[] = $route->getName();
         }
     }
-    
+
     // Default locale (en) routes
     expect($routeNames)->toContain('en.articles.list');
     expect($routeNames)->toContain('en.articles.new');
-    
+
     // Hungarian locale routes
     expect($routeNames)->toContain('hu.articles.list');
     expect($routeNames)->toContain('hu.articles.new');

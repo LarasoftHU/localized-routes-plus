@@ -2,10 +2,10 @@
 
 // config for LarasoftHU/LocalizedRoutesPlus
 return [
-  'locales' => [
-    'en',
-    'hu',
-  ],
+    'locales' => [
+        'en',
+        'hu',
+    ],
 
-  'default_locale' => 'en',
+    'default_locale' => 'en',
 ];

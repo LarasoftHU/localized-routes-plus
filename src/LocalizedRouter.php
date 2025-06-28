@@ -3,8 +3,6 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\Router;
-use LarasoftHU\LocalizedRoutesPlus\LocalizedResourceRegistrar;
-use LarasoftHU\LocalizedRoutesPlus\PendingLocalizedRouteRegistration;
 
 class LocalizedRouter extends Router
 {
@@ -14,13 +12,12 @@ class LocalizedRouter extends Router
             ->setRouter($this)
             ->setContainer($this->container);
     }
-    
+
     /**
      * Route a resource to a controller.
      *
      * @param  string  $name
      * @param  string  $controller
-     * @param  array  $options
      * @return \LarasoftHU\LocalizedRoutesPlus\PendingLocalizedRouteRegistration
      */
     public function resource($name, $controller, array $options = [])
@@ -35,4 +32,4 @@ class LocalizedRouter extends Router
             $registrar, $name, $controller, $options
         );
     }
-} 
+}

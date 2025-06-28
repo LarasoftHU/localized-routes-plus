@@ -11,9 +11,6 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
     /**
      * Register a localized resource route.
      *
-     * @param string $name
-     * @param string $controller
-     * @param array $options
      * @return \Illuminate\Routing\RouteCollection
      */
     public function registerLocalized(string $name, string $controller, array $options = [])
@@ -22,15 +19,15 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
         $collection = new RouteCollection;
 
-        foreach($locales as $locale) {
+        foreach ($locales as $locale) {
             $copy = clone $this;
-            $_name = $locale . '.' . $name;
+            $_name = $locale.'.'.$name;
             $_options = $options;
-            if(isset($_options['names'])) {
-                if(is_string($options['names'])) {
-                    $_options['names'] = $locale . '.' . $_options['names'];
+            if (isset($_options['names'])) {
+                if (is_string($options['names'])) {
+                    $_options['names'] = $locale.'.'.$_options['names'];
                 } else {
-                    $_options['names'] = array_map(fn($name) => $locale . '.' . $name, $_options['names']);
+                    $_options['names'] = array_map(fn ($name) => $locale.'.'.$name, $_options['names']);
                 }
             }
             $copy->register($_name, $controller, $_options, $collection);
@@ -44,7 +41,6 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      *
      * @param  string  $name
      * @param  string  $controller
-     * @param  array  $options
      * @return \Illuminate\Routing\RouteCollection
      */
     public function register($name, $controller, array $options = [], ?RouteCollection $collection = null)
@@ -69,7 +65,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
         $defaults = $this->resourceDefaults;
 
-        if(!$collection) {
+        if (! $collection) {
             $collection = new RouteCollection;
         }
 
@@ -107,5 +103,4 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
         return $collection;
     }
-
 }
