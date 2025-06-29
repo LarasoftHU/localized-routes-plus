@@ -22,11 +22,11 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         parent::register();
 
         // Lecseréljük a router instance-t a saját LocalizedRouter-ünkre
-        
+        /*
         $this->app->singleton('router', function ($app) {
             return new Router($app['events'], $app);
         });
-        
+        */
     }
 
     public function boot()
