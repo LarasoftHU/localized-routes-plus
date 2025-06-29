@@ -3,6 +3,7 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\ResourceRegistrar;
+use Illuminate\Routing\Route;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 
@@ -43,11 +44,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      */
     public function getResourceUri($resource)
     {
-        if ($this->locale && ! $this->uriLocalized) {
-            if ($this->locale === config('localized-routes-plus.default_locale') && ! config('localized-routes-plus.use_route_prefix_in_default_locale')) {
-                return $this->getResourceUriWithoutLocale($resource);
-            }
-
+        if ($this->doInjectLocaleForUri()) {
             return '/'.$this->locale.'/'.$this->getResourceUriWithoutLocale($resource);
         } else {
             return $this->getResourceUriWithoutLocale($resource);
@@ -146,6 +143,14 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
     private function doInjectLocaleForUri(): bool
     {
+        if(config('localized-routes-plus.use_subdomains_instead_of_prefixes')){
+            return false;
+        }
+
+        if($this->uriLocalized){
+            return false;
+        }
+
         if (! empty($this->locale)) {
             if ($this->locale === config('localized-routes-plus.default_locale') && ! config('localized-routes-plus.use_route_prefix_in_default_locale')) {
                 return false;
@@ -222,10 +227,45 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                 in_array($m, ! empty($options['trashed']) ? $options['trashed'] : array_intersect($resourceMethods, ['show', 'edit', 'update']))) {
                 $route->withTrashed();
             }
+            //$route->domain('apple.hu');
+            $route = $this->processDomainForRoute($route);
 
             $collection->add($route);
         }
 
         return $collection;
+    }
+
+    private function processDomainForRoute(Route $route) : Route
+    {
+        if (config('localized-routes-plus.use_subdomains_instead_of_prefixes') == true) {
+            if (isset(config('localized-routes-plus.domains')[$this->locale])) {
+
+                if(is_array(config('localized-routes-plus.domains')[$this->locale])){
+                    if(count(config('localized-routes-plus.domains')[$this->locale]) > 0){
+                        //dd(config('localized-routes-plus.domains')[$locale][0]);
+                        $originalName = $route->action['as'];
+                        $domains = config('localized-routes-plus.domains')[$this->locale];
+                        $route = $route->domain($domains[0]);
+                        $route->action['as'] = explode('.', $domains[0])[0].'-'.$originalName;
+                        for ($i = 1, $count = count($domains); $i < $count; $i++) {
+                            $copy = clone $route;
+                            $copy->domain($domains[$i]);
+                            $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
+                        }
+                    }
+                }else {
+                    $domain = config('localized-routes-plus.domains')[$this->locale];
+                    $route = $route->domain(config('localized-routes-plus.domains')[$this->locale]);
+                    if($domain == 'apple.example.hu') {
+                        //dd('260', $route->uri(), $domain, $route->getDomain());
+                    }
+                }
+            } else {
+                throw new \Exception('Domain not found for locale: '.$this->locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$this->locale.'\') method.');
+            }
+        }
+
+        return $route;
     }
 }

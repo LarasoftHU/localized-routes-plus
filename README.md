@@ -51,9 +51,51 @@ php artisan vendor:publish --tag="localized-routes-plus-views"
 
 ## Usage
 
+Add localized() to localize a route, you cannot use ->name after localized() for not resource routes!
+
 ```php
-$localizedRoutesPlus = new LarasoftHU\LocalizedRoutesPlus();
-echo $localizedRoutesPlus->echoPhrase('Hello, LarasoftHU!');
+// whitelist
+->localized('de')
+->localized(['en', 'de'])
+
+// blacklist
+->localizedExcept('de')
+->localizedExcept(['en', 'de'])
+```
+
+### In the config you can specify to use subdomains
+
+```php
+
+  // 1. 
+  'use_subdomains_instead_of_prefixes' => true,
+
+  // 2.
+  'localized-routes-plus.domains' => [
+      'en' => 'example.com',
+      'hu' => 'example.hu',
+      'de' => 'de.example.com',
+  ];
+
+  // OR
+    'localized-routes-plus.domains' => [
+      'en' => 'example.com',
+      'hu' => 'example.hu',
+      'de' => [
+        'de.example.com',
+        'de2.example.com',
+        'example.de'
+      ]
+  ];
+```
+
+```php
+
+Route::get('example', function () {
+  return 'hellp'
+})->name('example')->localized();
+
+Route::resource('apple/example', 'PostController')->names('example')->localizedExcept('de');
 ```
 
 ## Testing

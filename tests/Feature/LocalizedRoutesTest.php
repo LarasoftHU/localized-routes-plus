@@ -234,16 +234,24 @@ test('resource routes create routes for all locales with custom prefix and use_r
 
     // Ellenőrizzük, hogy mindkét locale-hoz létrejöttek a route-ok
     $routes = Route::getRoutes();
+    $locales = config('localized-routes-plus.locales');
+    $foundLocales = [];
 
     foreach ($routes as $route) {
         if ($route->getName() && str_contains($route->uri(), 'apple/posts')) {
             $name = $route->getName();
             $locale = explode('.', $name)[0];
+            $foundLocales[] = $locale;
             // Get locale working
             expect($route->getLocale())->toBe($locale);
             expect($route->uri())->toContain($locale.'/apple/posts');
         }
     }
+
+    $foundLocales = array_unique($foundLocales);
+    $missingLocales = array_diff($locales, $foundLocales);
+
+    expect($missingLocales)->toBe([]);
 });
 
 test('can get route uri for specific locale', function () {

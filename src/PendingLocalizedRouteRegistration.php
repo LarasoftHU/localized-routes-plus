@@ -23,6 +23,9 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
      */
     protected bool $uriLocalized = false;
 
+    /**
+     * Localize the routes for the given locales. If no locales are given, all locales will be localized.
+     */
     public function localized(array|string $locales = []): self
     {
         $this->mustBeLocalized = true;
@@ -30,6 +33,20 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
             $locales = [$locales];
         }
         $this->locales = $locales;
+
+        return $this;
+    }
+
+    /**
+     *  Localize all routes except the given locales. If no locales are given, all locales will be localized.
+     */
+    public function localizedExcept(array|string $locales = []): self
+    {
+        $this->mustBeLocalized = true;
+        if (is_string($locales)) {
+            $locales = [$locales];
+        }
+        $this->locales = array_diff(config('localized-routes-plus.locales'), $locales);
 
         return $this;
     }

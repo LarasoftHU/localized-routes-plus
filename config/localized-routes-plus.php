@@ -11,5 +11,11 @@ return [
 
     'use_subdomains_instead_of_prefixes' => env('LOCALIZED_ROUTES_USE_SUBDOMAINS', false),
 
+    'domains' => [
+        'en' => 'example.com',
+        'hu' => 'example.hu',
+        'de' => 'de.example.com',
+    ],
+
     'use_route_prefix_in_default_locale' => false,
 ];

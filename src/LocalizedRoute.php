@@ -4,6 +4,7 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 
 use BackedEnum;
 use Illuminate\Routing\Route;
+use Illuminate\Routing\RouteUri;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 
@@ -21,9 +22,9 @@ class LocalizedRoute extends Route
     /**
      * Get the locale of the route.
      */
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
-        return $this->locale;
+        return $this->locale?? null;
     }
 
     /**
@@ -38,16 +39,90 @@ class LocalizedRoute extends Route
         return $this;
     }
 
+    /**
+     * Set the locale of the route and update the uri and name of the route.
+     *
+     * @param  string  $locale
+     * @return $this
+     */
     private function setLocaleWithUriAndName(string $locale): self
     {
         $this->locale = $locale;
         // $locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false
-        if (! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)) {
-            $this->uri = $this->locale.'/'.$this->uri;
-        }
+        
+        
         if ($this->getName()) {
             $this->action['as'] = $this->locale.'.'.$this->action['as'];
         }
+
+        // Subdomains are handled here
+        if(config('localized-routes-plus.use_subdomains_instead_of_prefixes')){
+            if(isset(config('localized-routes-plus.domains')[$locale])){
+                if(is_array(config('localized-routes-plus.domains')[$locale])){
+                    if(count(config('localized-routes-plus.domains')[$locale]) > 0){
+                        
+                        //dd(config('localized-routes-plus.domains')[$locale][0]);
+                        $originalName = $this->action['as'];
+                        $domains = config('localized-routes-plus.domains')[$locale];
+                        $this->domain($domains[0]);
+                        $this->action['as'] = explode('.', $domains[0])[0].'-'.$originalName;
+                        for ($i = 1, $count = count($domains); $i < $count; $i++) {
+
+                            $copy = clone $this;
+                            $copy->domain($domains[$i]);
+                            $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
+                            $this->router->getRoutes()->add($copy);
+                        }
+                    }
+                }
+                else {
+                    $this->domain(config('localized-routes-plus.domains')[$locale]);
+                }
+            }
+            else {
+                throw new InvalidArgumentException('Domain not found for locale: '.$locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$locale.'\') method or remove from locales.');
+            }
+        }
+        else {
+            // Set prefix
+            if (
+                ! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)
+            ) {
+
+                    $this->uri = $this->locale.'/'.$this->uri;
+
+            }
+        }
+
+
+        return $this;
+    }
+
+    /**
+     * Get or set the domain for the route.
+     *
+     * @param  \BackedEnum|string|null  $domain
+     * @return $this|string|null
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function domain($domain = null)
+    {
+        if (is_null($domain)) {
+            return $this->getDomain();
+        }
+
+        if ($domain instanceof BackedEnum && ! is_string($domain = $domain->value)) {
+            throw new InvalidArgumentException('Enum must be string backed.');
+        }
+
+        $parsed = RouteUri::parse($domain);
+
+        $this->action['domain'] = $parsed->uri;
+
+        $this->bindingFields = array_merge(
+            $this->bindingFields, $parsed->bindingFields
+        );
 
         return $this;
     }
@@ -118,10 +193,10 @@ class LocalizedRoute extends Route
 
                 // Új route regisztrálása - használjuk a normál Route osztályt, ne a LocalizedRoute-ot
                 $newRoute = new LocalizedRoute($original->methods(), $original->uri(), $newAction);
-                $newRoute->setLocaleWithUriAndName($locale);
                 $newRoute->setRouter($this->router)->setContainer($this->container);
-
+                
                 // Hozzáadjuk a route collection-höz
+                $newRoute->setLocaleWithUriAndName($locale);
                 $this->router->getRoutes()->add($newRoute);
             }
         }
