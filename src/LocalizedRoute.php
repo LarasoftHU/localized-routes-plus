@@ -209,7 +209,7 @@ class LocalizedRoute extends Route
                             }
 
                             if($copy->getName()){
-                                $copy->action['as'] = $_prefix.'.'.$copy->getSafeName();
+                                $copy->action['as'] = str_replace('/','-',$_prefix).'.'.$copy->getSafeName();
                             }
 
                             $this->router->getRoutes()->add($copy);
