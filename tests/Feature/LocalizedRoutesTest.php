@@ -257,7 +257,6 @@ test('resource routes create routes for all locales with custom prefix and use_r
     expect($missingLocales)->toBe([]);
 });
 
-
 test('resource routes with custom names create routes for all locales', function () {
     // Létrehozunk egy lokalizált resource route-ot egyedi nevekkel
     Route::resource('articles', 'ArticleController')

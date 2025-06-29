@@ -11,6 +11,7 @@ class SetCountryFromSession
         if (session()->has('country')) {
             app()->setCountry(session('country'));
         }
+
         return $next($request);
     }
 }

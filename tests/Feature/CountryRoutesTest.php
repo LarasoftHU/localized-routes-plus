@@ -23,7 +23,7 @@ it('creates routes with country codes when use_countries is enabled', function (
 
     // Ellenőrizzük, hogy létezik az en-us.example route
     expect($routes->hasNamedRoute('en-us.example'))->toBeTrue();
-    
+
     // Ellenőrizzük, hogy létezik a hu-hu.example route
     expect($routes->hasNamedRoute('hu-hu.example'))->toBeTrue();
 
@@ -192,7 +192,7 @@ it('locale method throws exception when country parameter is missing', function 
 
     $enRoute = $routes->getByName('en-us.example');
 
-    expect(fn() => $enRoute->locale('hu'))
+    expect(fn () => $enRoute->locale('hu'))
         ->toThrow(InvalidArgumentException::class, 'You can not use locale() method without country parameter if use_countries config is true!');
 });
 
@@ -210,7 +210,7 @@ it('locale method throws exception when use_countries is false but country is pr
 
     $enRoute = $routes->getByName('en.example');
 
-    expect(fn() => $enRoute->locale('hu', 'hu'))
+    expect(fn () => $enRoute->locale('hu', 'hu'))
         ->toThrow(InvalidArgumentException::class, 'You can not use country parameter without use_countries config!');
 });
 
@@ -256,7 +256,7 @@ it('getUrl method throws exception when country parameter is missing with use_co
 
     $enRoute = $routes->getByName('en-us.example');
 
-    expect(fn() => $enRoute->getUrl('hu'))
+    expect(fn () => $enRoute->getUrl('hu'))
         ->toThrow(InvalidArgumentException::class, 'You can not use getUrl() method without country parameter if use_countries config is true!');
 });
 
@@ -274,7 +274,7 @@ it('getUrl method throws exception when country parameter is provided but use_co
 
     $enRoute = $routes->getByName('en.example');
 
-    expect(fn() => $enRoute->getUrl('hu', 'hu'))
+    expect(fn () => $enRoute->getUrl('hu', 'hu'))
         ->toThrow(InvalidArgumentException::class, 'You can not use getUrl() method with country parameter if use_countries config is false!');
 });
 
@@ -320,7 +320,7 @@ it('resource routes work with countries', function () {
 
     // Ellenőrizzük, hogy minden resource route létrejött mindkét országhoz
     $resourceActions = ['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'];
-    
+
     foreach ($resourceActions as $action) {
         expect($routes->hasNamedRoute("en-us.posts.$action"))->toBeTrue();
         expect($routes->hasNamedRoute("hu-hu.posts.$action"))->toBeTrue();
@@ -334,7 +334,7 @@ it('works with POST routes and countries', function () {
     config()->set('localized-routes-plus.default_locale', 'en');
     config()->set('localized-routes-plus.locales', ['en', 'hu']);
     config()->set('localized-routes-plus.countries', [
-        'en' => 'us', 
+        'en' => 'us',
         'hu' => 'hu',
     ]);
 
@@ -486,7 +486,7 @@ it('country and locale getters work correctly', function () {
 
     expect($enRoute->getLocale())->toBe('en');
     expect($enRoute->getCountry())->toBe('us');
-    
+
     expect($huRoute->getLocale())->toBe('hu');
     expect($huRoute->getCountry())->toBe('hu');
-}); 
+});

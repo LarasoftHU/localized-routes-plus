@@ -1,0 +1,9 @@
+parameters:
+    level: 5
+    paths:
+        - src/
+        - tests/
+    ignoreErrors:
+        - '#Property LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+ has no type specified#'
+        - '#Method LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+::[a-zA-Z]+ has no return type specified#'
+        - '#Method LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+::[a-zA-Z]+ has parameter \$[a-zA-Z]+ with no type specified#' 
