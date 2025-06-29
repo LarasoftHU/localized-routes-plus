@@ -208,8 +208,12 @@ class LocalizedRoute extends Route
      *
      * @param  string|null  $locale  If null, return the uri of the route for the current locale.
      */
-    public function getRouteUri($locale = null): string
+    public function locale($locale = null): string
     {
+        if(!$this->isLocalized){
+            throw new InvalidArgumentException('Route is not localized so you can not use locale() method!');
+        }
+
         if ($locale) {
             $name = $this->action['as'];
             $safeName = Str::replaceFirst(
@@ -222,5 +226,21 @@ class LocalizedRoute extends Route
         }
 
         return $this->uri;
+    }
+
+    public function is($name): bool
+    {
+        if($this->isLocalized){
+            $name = $this->action['as'];
+            $safeName = Str::replaceFirst(
+                $this->locale.'.',
+                '',
+                $name
+            );
+
+            return $safeName == $name;
+        }
+
+        return $this->action['as'] == $name;
     }
 }
