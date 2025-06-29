@@ -116,13 +116,31 @@ class LocalizedRoute extends Route
      *
      * @return $this
      */
-    public function localized(): self
+    public function localized(array|string $locales = []): self
     {
         $this->isLocalized = true;
-
+        if (is_string($locales)) {
+            $locales = [$locales];
+        }
         // Ha már van név beállítva, rögtön feldolgozzuk
-        $this->processLocalization();
+        $this->processLocalization($locales);
 
+        return $this;
+    }
+
+    /**
+     *  Localize all routes except the given locales. If no locales are given, all locales will be localized.
+     */
+    public function localizedExcept(array|string $locales = []): self
+    {
+        $this->isLocalized = true;
+        if (is_string($locales)) {
+            $locales = [$locales];
+        }
+
+        $locales = array_diff(config('localized-routes-plus.locales'), $locales);
+
+        $this->processLocalization($locales);
         return $this;
     }
 
@@ -144,13 +162,16 @@ class LocalizedRoute extends Route
     /**
      * Process the localization of the route.
      */
-    protected function processLocalization(): void
+    protected function processLocalization(array $locales = []): void
     {
         $this->isProcessed = true;
 
         $originalName = $this->action['as'] ?? null;
 
-        $locales = config('localized-routes-plus.locales', ['en']);
+        if(count($locales) == 0){
+            $locales = config('localized-routes-plus.locales', ['en']);
+        }
+
         $defaultLocale = config('localized-routes-plus.default_locale', 'en');
 
         $original = clone $this;

@@ -63,13 +63,6 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
         parent::__construct($registrar, $name, $controller, $options);
     }
 
-    public function uriLocalized()
-    {
-        $this->uriLocalized = true;
-
-        return $this;
-    }
-
     /**
      * Register the resource route.
      *
@@ -81,15 +74,15 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
 
         $locales = [];
         if ($this->mustBeLocalized) {
-            if (empty($this->locales)) {
+            if (empty($this->locales) || count($this->locales) == 0) {
                 $locales = config('localized-routes-plus.locales');
             } else {
                 $locales = $this->locales;
             }
         }
-
-        return $this->registrar->registerLocalized(
-            $this->name, $this->controller, $this->options, $locales, $this->uriLocalized
+        //dump('PendingLocalizedRouteRegistration', 'name: '.$this->name, 'controller: '.$this->controller, 'options: '.json_encode($this->options), 'locales: '.json_encode($locales));
+        return $this->registrar->register(
+            $this->name, $this->controller, $this->options, $locales
         );
     }
 }

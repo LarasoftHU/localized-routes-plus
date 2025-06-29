@@ -215,6 +215,7 @@ test('resource routes create routes for all locales with custom prefix', functio
     foreach ($routes as $route) {
         if ($route->getName() && str_contains($route->uri(), 'apple/posts')) {
             $name = $route->getName();
+            //dd($name);
             // Get locale working
             $locale = explode('.', $name)[0];
             expect($route->getLocale())->toBe($locale);

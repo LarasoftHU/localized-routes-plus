@@ -280,7 +280,6 @@ it('Works with subdomain Resource routes with custom prefix', function () {
   // Debug: remove duplicates to properly check missing domains
   $foundDomains = array_unique($foundDomains);
   $missingDomains = array_diff($allDomains, $foundDomains);
-  
   // Debug information - uncomment to see what's happening
   // echo "All domains: " . print_r($allDomains, true);
   // echo "Found domains: " . print_r($foundDomains, true);
