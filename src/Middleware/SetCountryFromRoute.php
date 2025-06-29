@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use LarasoftHU\LocalizedRoutesPlus\LocalizedRoute;
 
-class SetLocaleFromRoute
+class SetCountryFromRoute
 {
     /**
      * Handle an incoming request.
@@ -22,11 +22,10 @@ class SetLocaleFromRoute
         
         // Ellenőrizzük, hogy a route egy LocalizedRoute példány-e
         if ($route instanceof LocalizedRoute) {
-            $locale = $route->getLocale();
+            $country = $route->getCountry();
             
-            // Ha van beállított locale, akkor beállítjuk az alkalmazás locale-jét
-            if ($locale) {
-                App::setLocale($locale);
+            if ($country) {
+                App::setCountry($country);
             }
         }
         
