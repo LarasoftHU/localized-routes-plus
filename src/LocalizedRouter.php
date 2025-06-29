@@ -4,6 +4,7 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 
 class LocalizedRouter extends Router
@@ -22,7 +23,7 @@ class LocalizedRouter extends Router
 
     public function newRoute($methods, $uri, $action)
     {
-        return (new LocalizedRoute($methods, $uri, $action))
+        return (new Route($methods, $uri, $action))
             ->setRouter($this)
             ->setContainer($this->container);
     }
