@@ -27,6 +27,8 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
             return new Router($app['events'], $app);
         });
         */
+
+        $this->app->bind(Route::class, LocalizedRouter::class);
     }
 
     public function boot()
