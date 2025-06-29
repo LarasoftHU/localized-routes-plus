@@ -14,6 +14,16 @@ class LocalizedRoute extends Route
     protected bool $isProcessed = false;
 
     /**
+     * The locale of the route.
+     */
+    protected ?string $locale = null;
+
+    /**
+     * The country of the route.
+     */
+    protected ?string $country = null;
+
+    /**
      * Create a new Route instance.
      *
      * @param  array|string  $methods
@@ -27,10 +37,6 @@ class LocalizedRoute extends Route
         $this->isProcessed = false;
     }
 
-    /**
-     * The locale of the route.
-     */
-    protected ?string $locale = null;
 
     /**
      * Get the locale of the route.
@@ -52,6 +58,25 @@ class LocalizedRoute extends Route
         return $this;
     }
 
+    /**
+     * Get the country of the route.
+     */
+    public function getCountry(): ?string
+    {
+        return $this->country ?? null;
+    }
+
+    /**
+     * Set the country of the route.
+     *
+     * @return $this
+     */
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
     /**
      * Mark the route as localized.
      *
@@ -153,10 +178,12 @@ class LocalizedRoute extends Route
         if ($this->getName()) {
             if(config('localized-routes-plus.use_countries')){
                 if(is_array(config('localized-routes-plus.countries')[$locale])){
-                    $this->action['as'] = $this->locale.'-'.config('localized-routes-plus.countries')[$locale][0].'.'.$this->action['as'];
+                    $country = config('localized-routes-plus.countries')[$locale][0];
                 }else{
-                    $this->action['as'] = $this->locale.'-'.config('localized-routes-plus.countries')[$locale].'.'.$this->action['as'];
+                    $country = config('localized-routes-plus.countries')[$locale];
                 }
+                $this->action['as'] = $this->locale.'-'.$country.'.'.$this->action['as'];
+                $this->setCountry($country);
             }else{
                 $this->action['as'] = $this->locale.'.'.$this->action['as'];
             }
@@ -219,6 +246,7 @@ class LocalizedRoute extends Route
                             if($copy->getName()){
                                 $copy->action['as'] = str_replace('/','-',$_prefix).'.'.$copy->getSafeName();
                             }
+                            $copy->setCountry($countryForLocale[$i]);
 
                             $this->router->getRoutes()->add($copy);
                         }
@@ -245,14 +273,26 @@ class LocalizedRoute extends Route
      * @param  string|null  $locale  If null, return the uri of the route for the current locale.
      * @return LocalizedRoute|Route
      */
-    public function locale($locale = null): LocalizedRoute
+    public function locale($locale = null, $country = null): LocalizedRoute
     {
         if (! $this->locale) {
             throw new InvalidArgumentException('Route is not localized so you can not use locale() method!');
         }
 
-        if ($locale) {
+        if($country && !config('localized-routes-plus.use_countries')){
+            throw new InvalidArgumentException('You can not use country parameter without use_countries config!');
+        }
+
+        if(!$country && config('localized-routes-plus.use_countries')){
+            throw new InvalidArgumentException('You can not use locale() method without country parameter if use_countries config is true!');
+        }
+
+        if ($locale && !$country) {
             return $this->router->getRoutes()->getByName($locale.'.'.$this->getSafeName());
+        }
+
+        if ($locale && $country) {
+            return $this->router->getRoutes()->getByName($locale.'-'.$country.'.'.$this->getSafeName());
         }
 
         return $this;
@@ -287,10 +327,22 @@ class LocalizedRoute extends Route
     /**
      * Get the url of the route for a specific locale.
      */
-    public function getUrl($locale = null): string
+    public function getUrl($locale = null, $country = null): string
     {
-        if ($locale) {
+        if($locale && !$country && config('localized-routes-plus.use_countries')){
+            throw new InvalidArgumentException('You can not use getUrl() method without country parameter if use_countries config is true!');
+        }
+
+        if($country && !config('localized-routes-plus.use_countries')){
+            throw new InvalidArgumentException('You can not use getUrl() method with country parameter if use_countries config is false!');
+        }
+
+        if ($locale && !$country) {
             return route($locale.'.'.$this->getSafeName());
+        }
+
+        if ($locale && $country) {
+            return route($locale.'-'.$country.'.'.$this->getSafeName());
         }
 
         return route($this->getSafeName());
