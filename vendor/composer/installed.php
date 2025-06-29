@@ -3,7 +3,7 @@
         'name' => 'kapasifulop/localized-routes-plus',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4cb5df115db48a6cc37f0956cc7299e2dfb7a9f9',
+        'reference' => '4ee94663473cdb767fbfedd88dca5109870c57e9',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -427,7 +427,7 @@
         'kapasifulop/localized-routes-plus' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4cb5df115db48a6cc37f0956cc7299e2dfb7a9f9',
+            'reference' => '4ee94663473cdb767fbfedd88dca5109870c57e9',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
