@@ -14,6 +14,13 @@ class LocalizedRoute extends Route
 
     protected bool $isProcessed = false;
 
+    /**
+     * Create a new Route instance.
+     *
+     * @param  array|string  $methods
+     * @param  string  $uri
+     * @param  \Closure|array  $action
+     */
     public function __construct($methods, $uri, $action)
     {
         parent::__construct($methods, $uri, $action);
@@ -127,19 +134,11 @@ class LocalizedRoute extends Route
      */
     public function name($name): self
     {
-        // Laravel kompatibilis name() metódus implementáció
-        if ($name instanceof BackedEnum && ! is_string($name = $name->value)) {
-            throw new InvalidArgumentException('Enum must be string backed.');
-        }
-
-        $this->action['as'] = isset($this->action['as']) ? $this->action['as'].$name : $name;
-
-        // Ha localized és még nem dolgoztuk fel, feldolgozzuk
         if ($this->isProcessed) {
             throw new InvalidArgumentException('Route already processed! Name must be set before localized() is called.');
         }
-
-        return $this;
+        
+        return parent::name($name);
     }
 
     /**
