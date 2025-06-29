@@ -210,7 +210,7 @@ class LocalizedRoute extends Route
      */
     public function locale($locale = null): string
     {
-        if(!$this->isLocalized){
+        if(!$this->locale){
             throw new InvalidArgumentException('Route is not localized so you can not use locale() method!');
         }
 
@@ -230,17 +230,19 @@ class LocalizedRoute extends Route
 
     public function is($name): bool
     {
-        if($this->isLocalized){
-            $name = $this->action['as'];
-            $safeName = Str::replaceFirst(
-                $this->locale.'.',
-                '',
-                $name
-            );
-
-            return $safeName == $name;
+        if($this->locale){
+            return $this->safeName() == $name;
         }
 
         return $this->action['as'] == $name;
+    }
+
+    public function safeName(): string
+    {
+        return Str::replaceFirst(
+            $this->locale.'.',
+            '',
+            $this->action['as']
+        );
     }
 }
