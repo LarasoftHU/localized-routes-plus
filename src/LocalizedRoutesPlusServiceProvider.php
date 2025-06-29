@@ -3,6 +3,7 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\Router;
+use LarasoftHU\LocalizedRoutesPlus\Middleware\SetLocaleFromRoute;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -31,5 +32,9 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
+        
+        // Regisztráljuk a middleware-t
+        $router = $this->app->make(Router::class);
+        $router->aliasMiddleware('set-locale-from-route', SetLocaleFromRoute::class);
     }
 }
