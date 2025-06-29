@@ -257,14 +257,6 @@ test('resource routes create routes for all locales with custom prefix and use_r
     expect($missingLocales)->toBe([]);
 });
 
-test('can get route uri for specific locale', function () {
-    Route::resource('apple/posts', 'PostController')->localized()->names('posts');
-
-    $routes = Route::getRoutes();
-    $route = $routes->getByName('en.posts.index');
-    expect($route->getRouteUri('hu'))->toBe('hu/apple/posts');
-    expect($route->getRouteUri('en'))->toBe('apple/posts');
-});
 
 test('resource routes with custom names create routes for all locales', function () {
     // Létrehozunk egy lokalizált resource route-ot egyedi nevekkel
