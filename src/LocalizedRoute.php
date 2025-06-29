@@ -207,18 +207,20 @@ class LocalizedRoute extends Route
      * Get the uri of the route for a specific locale.
      *
      * @param  string|null  $locale  If null, return the uri of the route for the current locale.
+     * 
+     * @return LocalizedRoute|Route
      */
-    public function locale($locale = null): string
+    public function locale($locale = null): LocalizedRoute
     {
         if(!$this->locale){
             throw new InvalidArgumentException('Route is not localized so you can not use locale() method!');
         }
 
         if ($locale) {
-            return $this->router->getRoutes()->getByName($locale.'.'.$this->getSafeName())->uri;
+            return $this->router->getRoutes()->getByName($locale.'.'.$this->getSafeName());
         }
 
-        return $this->uri;
+        return $this;
     }
 
     /**
