@@ -230,6 +230,8 @@ test('resource routes create routes for all locales with custom prefix', functio
 
 test('resource routes create routes for all locales with custom prefix and use_route_prefix_in_default_locale is true', function () {
     // Létrehozunk egy lokalizált resource route-ot
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.locales', ['en', 'hu']);
     config()->set('localized-routes-plus.use_route_prefix_in_default_locale', true);
     Route::resource('apple/posts', 'PostController')->localized()->names('posts');
 

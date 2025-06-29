@@ -54,64 +54,6 @@ class LocalizedRoute extends Route
     }
 
     /**
-     * Set the locale of the route and update the uri and name of the route.
-     *
-     * @param  string  $locale
-     * @return $this
-     */
-    private function setLocaleWithUriAndName(string $locale): self
-    {
-        $this->locale = $locale;
-        // $locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false
-        
-        
-        if ($this->getName()) {
-            $this->action['as'] = $this->locale.'.'.$this->action['as'];
-        }
-
-        // Subdomains are handled here
-        if(config('localized-routes-plus.use_subdomains_instead_of_prefixes')){
-            if(isset(config('localized-routes-plus.domains')[$locale])){
-                if(is_array(config('localized-routes-plus.domains')[$locale])){
-                    if(count(config('localized-routes-plus.domains')[$locale]) > 0){
-                        
-                        //dd(config('localized-routes-plus.domains')[$locale][0]);
-                        $originalName = $this->action['as'];
-                        $domains = config('localized-routes-plus.domains')[$locale];
-                        $this->domain($domains[0]);
-                        $this->action['as'] = explode('.', $domains[0])[0].'-'.$originalName;
-                        for ($i = 1, $count = count($domains); $i < $count; $i++) {
-
-                            $copy = clone $this;
-                            $copy->domain($domains[$i]);
-                            $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
-                            $this->router->getRoutes()->add($copy);
-                        }
-                    }
-                }
-                else {
-                    $this->domain(config('localized-routes-plus.domains')[$locale]);
-                }
-            }
-            else {
-                throw new InvalidArgumentException('Domain not found for locale: '.$locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$locale.'\') method or remove from locales.');
-            }
-        }
-        else {
-            // Set prefix
-            if (
-                ! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)
-            ) {
-                // Fix: Properly handle root URI ('/') to avoid double slashes
-                $this->uri = rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/');
-            }
-        }
-
-
-        return $this;
-    }
-
-    /**
      * Mark the route as localized.
      *
      * @return $this
@@ -176,11 +118,6 @@ class LocalizedRoute extends Route
 
         $original = clone $this;
 
-        // Az eredeti route-ot átnevezzük a default locale-lal
-        $this->setLocaleWithUriAndName($defaultLocale);
-
-        // KRITIKUS: Frissítjük a RouteCollection name lookup cache-t
-        $this->router->getRoutes()->refreshNameLookups();
 
         // Létrehozzuk a többi locale-hoz is a route-okat
         foreach ($locales as $locale) {
@@ -197,8 +134,79 @@ class LocalizedRoute extends Route
                 $this->router->getRoutes()->add($newRoute);
             }
         }
+        
+        // Az eredeti route-ot átnevezzük a default locale-lal
+        $this->setLocaleWithUriAndName($defaultLocale);
+
         $this->router->getRoutes()->refreshNameLookups();
         $this->router->getRoutes()->refreshActionLookups();
+    }
+
+        /**
+     * Set the locale of the route and update the uri and name of the route.
+     *
+     * @param  string  $locale
+     * @return $this
+     */
+    private function setLocaleWithUriAndName(string $locale): self
+    {
+        $this->locale = $locale;
+        
+        if ($this->getName()) {
+            $this->action['as'] = $this->locale.'.'.$this->action['as'];
+        }
+
+        // Subdomains are handled here
+        if(config('localized-routes-plus.use_subdomains_instead_of_prefixes')){
+            if(isset(config('localized-routes-plus.domains')[$locale])){
+                if(is_array(config('localized-routes-plus.domains')[$locale])){
+                    if(count(config('localized-routes-plus.domains')[$locale]) > 0){
+                        
+                        //dd(config('localized-routes-plus.domains')[$locale][0]);
+                        $originalName = $this->action['as'];
+                        $domains = config('localized-routes-plus.domains')[$locale];
+                        $this->domain($domains[0]);
+                        $this->action['as'] = explode('.', $domains[0])[0].'-'.$originalName;
+                        for ($i = 1, $count = count($domains); $i < $count; $i++) {
+
+                            $copy = clone $this;
+                            $copy->domain($domains[$i]);
+                            $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
+                            $this->router->getRoutes()->add($copy);
+                        }
+                    }
+                }
+                else {
+                    $this->domain(config('localized-routes-plus.domains')[$locale]);
+                }
+            }
+            else {
+                throw new InvalidArgumentException('Domain not found for locale: '.$locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$locale.'\') method or remove from locales.');
+            }
+        }
+        else {
+            // Set prefix
+            if (
+                ! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)
+            ) {
+                // Fix: Properly handle root URI ('/') to avoid double slashes
+                $groupStack = last($this->router->getGroupStack());
+                if($groupStack && isset($groupStack['prefix'])){
+                    $prefixToRemove = $groupStack['prefix'];
+
+                    //HELP: i don't know why this is needed, but it is :)
+                    if(str_starts_with($this->uri, $prefixToRemove) && $locale != config('localized-routes-plus.default_locale')){
+                        $this->uri = ltrim($this->uri, $prefixToRemove);
+                    }
+                    $this->setUri(rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/'));
+                }else {
+                    $this->uri = rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/');
+                }
+            }
+        }
+
+
+        return $this;
     }
 
     /**
