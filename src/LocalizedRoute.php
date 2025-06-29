@@ -63,10 +63,8 @@ class LocalizedRoute extends Route
         if (is_string($locales)) {
             $locales = [$locales];
         }
-        // Ha már van név beállítva, rögtön feldolgozzuk
-        $this->processLocalization($locales);
-
         $this->middleware(SetLocaleFromRoute::class);
+        $this->processLocalization($locales);
 
         return $this;
     }
