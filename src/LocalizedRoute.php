@@ -25,8 +25,6 @@ class LocalizedRoute extends Route
         parent::__construct($methods, $uri, $action);
         $this->isLocalized = false;
         $this->isProcessed = false;
-
-        $this->middleware(SetLocaleFromRoute::class);
     }
 
     /**
@@ -67,6 +65,8 @@ class LocalizedRoute extends Route
         }
         // Ha már van név beállítva, rögtön feldolgozzuk
         $this->processLocalization($locales);
+
+        $this->middleware(SetLocaleFromRoute::class);
 
         return $this;
     }
