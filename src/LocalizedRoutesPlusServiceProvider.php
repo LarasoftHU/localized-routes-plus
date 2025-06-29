@@ -23,8 +23,9 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
 
         // A router-t helyesen felülírjuk a Laravel 12-ben
         $this->app->extend('router', function ($router, $app) {
-            //return new LocalizedRouter($app['events'], $app);
-            return $router;
+            $_router = new LocalizedRouter($app['events'], $app);
+            $_router->setRoutes($router->getRoutes());
+            return $_router;
         });
     }
 
