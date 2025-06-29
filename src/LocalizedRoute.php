@@ -251,4 +251,17 @@ class LocalizedRoute extends Route
             $this->action['as']
         );
     }
+
+    /**
+     * Get the url of the route for a specific locale.
+     *
+     * @return string
+     */
+    public function getUrl($locale = null) : string {
+        if($locale){
+            return route($locale.'.'.$this->getSafeName());
+        }
+
+        return route($this->getSafeName());
+    }
 }
