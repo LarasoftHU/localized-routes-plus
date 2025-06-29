@@ -40,6 +40,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
 
         Application::macro('setCountry', function ($country) {
             $this['config']->set('app.country', $country);
+            session()->put('country', $country);
             return $this; // chainable
         });
     }
