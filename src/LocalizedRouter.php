@@ -32,7 +32,7 @@ class LocalizedRouter extends Router
      */
     public function resource($name, $controller, array $options = [])
     {
-        if ($this->container && $this->container->bound(LocalizedResourceRegistrar::class)) {
+        if ($this->container->bound(LocalizedResourceRegistrar::class)) {
             $registrar = $this->container->make(LocalizedResourceRegistrar::class);
         } else {
             $registrar = new LocalizedResourceRegistrar($this);

@@ -74,15 +74,21 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
 
         $locales = [];
         if ($this->mustBeLocalized) {
-            if (empty($this->locales) || count($this->locales) == 0) {
+            if (empty($this->locales)) {
                 $locales = config('localized-routes-plus.locales');
             } else {
                 $locales = $this->locales;
             }
         }
 
+        if ($this->registrar instanceof LocalizedResourceRegistrar) {
+            return $this->registrar->register(
+                $this->name, $this->controller, $this->options, $locales
+            );
+        }
+
         return $this->registrar->register(
-            $this->name, $this->controller, $this->options, $locales
+            $this->name, $this->controller, $this->options
         );
     }
 }

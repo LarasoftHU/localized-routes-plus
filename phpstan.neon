@@ -3,7 +3,9 @@ parameters:
     paths:
         - src/
         - tests/
+    treatPhpDocTypesAsCertain: false
     ignoreErrors:
-        - '#Property LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+ has no type specified#'
-        - '#Method LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+::[a-zA-Z]+ has no return type specified#'
-        - '#Method LarasoftHU\\LocalizedRoutesPlus\\[a-zA-Z\\]+::[a-zA-Z]+ has parameter \$[a-zA-Z]+ with no type specified#' 
+        - '#Call to an undefined method Illuminate\\Routing\\Route::(localized|getLocale|getCountry|getUrl|getSafeName|localizedExcept)\(\)#'
+        - '#Call to an undefined method Illuminate\\Routing\\PendingResourceRegistration::(localized|localizedExcept)\(\)#'
+        - '#Argument of an invalid type Illuminate\\Routing\\RouteCollectionInterface supplied for foreach, only iterables are supported#'
+        - '#Parameter .* of function expect contains unresolvable type#' 

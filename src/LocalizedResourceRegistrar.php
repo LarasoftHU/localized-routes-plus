@@ -18,7 +18,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      */
     public function register($name, $controller, array $options = [], $locales = [])
     {
-        if (isset($options['parameters']) && ! isset($this->parameters)) {
+        if (isset($options['parameters']) && ! is_array($this->parameters)) {
             $this->parameters = $options['parameters'];
         }
         // If the resource name contains a slash, we will assume the developer wishes to
@@ -71,7 +71,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                 $route->withTrashed();
             }
 
-            if ($locales && count($locales) > 0) {
+            if ($locales && is_array($locales) && count($locales) > 0) {
                 $route = $route->localized($locales);
             }
 

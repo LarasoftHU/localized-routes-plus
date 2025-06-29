@@ -166,6 +166,7 @@ it('locale method works with countries', function () {
     $router = app('router');
     $routes = $router->getRoutes();
 
+    /** @var \LarasoftHU\LocalizedRoutesPlus\LocalizedRoute $enRoute */
     $enRoute = $routes->getByName('en-us.example');
     $huRoute = $enRoute->locale('hu', 'hu');
 
@@ -190,6 +191,7 @@ it('locale method throws exception when country parameter is missing', function 
     $router = app('router');
     $routes = $router->getRoutes();
 
+    /** @var \LarasoftHU\LocalizedRoutesPlus\LocalizedRoute $enRoute */
     $enRoute = $routes->getByName('en-us.example');
 
     expect(fn () => $enRoute->locale('hu'))
@@ -208,6 +210,7 @@ it('locale method throws exception when use_countries is false but country is pr
     $router = app('router');
     $routes = $router->getRoutes();
 
+    /** @var \LarasoftHU\LocalizedRoutesPlus\LocalizedRoute $enRoute */
     $enRoute = $routes->getByName('en.example');
 
     expect(fn () => $enRoute->locale('hu', 'hu'))
