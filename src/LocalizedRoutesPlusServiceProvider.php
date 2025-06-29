@@ -2,6 +2,7 @@
 
 namespace LarasoftHU\LocalizedRoutesPlus;
 
+use Illuminate\Support\Facades\Route;
 use LarasoftHU\LocalizedRoutesPlus\Commands\LocalizedRoutesPlusCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -23,6 +24,8 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         $this->app->singleton('router', function ($app) {
             return new LocalizedRouter($app['events'], $app);
         });
+
+        Route::setFacadeApplication($this->app);
     }
 
     public function boot()

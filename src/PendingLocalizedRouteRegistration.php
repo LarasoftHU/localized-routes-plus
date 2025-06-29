@@ -3,6 +3,7 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\PendingResourceRegistration;
+use Illuminate\Routing\ResourceRegistrar;
 use Illuminate\Routing\Route;
 
 class PendingLocalizedRouteRegistration extends PendingResourceRegistration
@@ -49,6 +50,17 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
         $this->locales = array_diff(config('localized-routes-plus.locales'), $locales);
 
         return $this;
+    }
+
+    /**
+     * Create a new pending resource registration instance.
+     *
+     * @param  string  $name
+     * @param  string  $controller
+     */
+    public function __construct(ResourceRegistrar $registrar, $name, $controller, array $options)
+    {
+        parent::__construct($registrar, $name, $controller, $options);
     }
 
     public function uriLocalized()
