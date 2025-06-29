@@ -12,10 +12,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('localized-routes-plus')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_localized_routes_plus_table')
-            ->hasCommand(LocalizedRoutesPlusCommand::class);
+            ->hasConfigFile();
     }
 
     public function register()
