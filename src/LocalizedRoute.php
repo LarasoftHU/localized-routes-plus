@@ -215,29 +215,33 @@ class LocalizedRoute extends Route
         }
 
         if ($locale) {
-            $name = $this->action['as'];
-            $safeName = Str::replaceFirst(
-                $this->locale.'.',
-                '',
-                $name
-            );
-
-            return $this->router->getRoutes()->getByName($locale.'.'.$safeName)->uri;
+            return $this->router->getRoutes()->getByName($locale.'.'.$this->getSafeName())->uri;
         }
 
         return $this->uri;
     }
 
+    /**
+     * Check if the route is a specific name without the locale.
+     *
+     * @param  string  $name
+     * @return bool
+     */
     public function is($name): bool
     {
         if($this->locale){
-            return $this->safeName() == $name;
+            return $this->getSafeName() == $name;
         }
 
         return $this->action['as'] == $name;
     }
 
-    public function safeName(): string
+    /**
+     * Get the safe name of the route without the locale.
+     *
+     * @return string
+     */
+    public function getSafeName(): string
     {
         return Str::replaceFirst(
             $this->locale.'.',
