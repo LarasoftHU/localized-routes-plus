@@ -13,15 +13,19 @@ it('can chain localized method after Route::get', function () {
 it('set localized route name', function () {
     $route = Route::get('test', function () {
         return 'test';
-    })->localized()->name('test');
+    })->name('test')->localized();
 
     expect($route->getName())->toBe('en.test');
 });
 
 it('creates routes for all locales', function () {
+    
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+    config()->set('localized-routes-plus.default_locale', 'en');
+
     Route::get('example', function () {
         return 'example';
-    })->localized()->name('example');
+    })->name('example')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -36,8 +40,29 @@ it('creates routes for all locales', function () {
     $enRoute = $routes->getByName('en.example');
     $huRoute = $routes->getByName('hu.example');
 
-    expect($enRoute->uri())->toBe($huRoute->uri());
     expect($enRoute->uri())->toBe('example');
+    expect($huRoute->uri())->toBe('hu/example');
+});
+
+it('creates routes for all locales with prefix for default locale in url enabled', function () {
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', true);
+    config()->set('localized-routes-plus.default_locale', 'en');
+
+    Route::get('apple/example', function () {
+        return 'example';
+    })->name('example')->localized();
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    expect($routes->hasNamedRoute('en.example'))->toBeTrue();
+    expect($routes->hasNamedRoute('hu.example'))->toBeTrue();
+
+    $enRoute = $routes->getByName('en.example');
+    $huRoute = $routes->getByName('hu.example');
+
+    expect($enRoute->uri())->toBe('en/apple/example');
+    expect($huRoute->uri())->toBe('hu/apple/example');
 });
 
 it('works with different call order', function () {
@@ -59,7 +84,7 @@ it('works with different call order', function () {
 it('works with POST routes', function () {
     Route::post('submit', function () {
         return 'submitted';
-    })->localized()->name('submit');
+    })->name('submit')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -78,7 +103,7 @@ it('works with POST routes', function () {
 it('works with PUT routes', function () {
     Route::put('update/{id}', function ($id) {
         return "updated $id";
-    })->localized()->name('update');
+    })->name('update')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -94,7 +119,7 @@ it('works with PUT routes', function () {
 it('works with PATCH routes', function () {
     Route::patch('patch/{id}', function ($id) {
         return "patched $id";
-    })->localized()->name('patch');
+    })->name('patch')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -107,7 +132,7 @@ it('works with PATCH routes', function () {
 it('works with DELETE routes', function () {
     Route::delete('delete/{id}', function ($id) {
         return "deleted $id";
-    })->localized()->name('delete');
+    })->name('delete')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -120,7 +145,7 @@ it('works with DELETE routes', function () {
 it('works with Route::match', function () {
     Route::match(['GET', 'POST'], 'multi', function () {
         return 'multi method';
-    })->localized()->name('multi');
+    })->name('multi')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -136,7 +161,7 @@ it('works with Route::match', function () {
 it('works with Route::any', function () {
     Route::any('any-method', function () {
         return 'any method';
-    })->localized()->name('any');
+    })->name('any')->localized();
 
     $router = app('router');
     $routes = $router->getRoutes();
@@ -153,9 +178,11 @@ test('resource routes create routes for all locales', function () {
     $routes = Route::getRoutes();
 
     $routeNames = [];
+    $routeUris = [];
     foreach ($routes as $route) {
         if ($route->getName()) {
             $routeNames[] = $route->getName();
+            $routeUris[] = $route->uri();
         }
     }
     // Default locale (en) routes
@@ -175,8 +202,60 @@ test('resource routes create routes for all locales', function () {
     expect($routeNames)->toContain('hu.posts.edit');
     expect($routeNames)->toContain('hu.posts.update');
     expect($routeNames)->toContain('hu.posts.destroy');
-
+    
 });
+
+
+test('resource routes create routes for all locales with custom prefix', function () {
+    // Létrehozunk egy lokalizált resource route-ot
+    Route::resource('apple/posts', 'PostController')->localized()->names('posts');
+
+    // Ellenőrizzük, hogy mindkét locale-hoz létrejöttek a route-ok
+    $routes = Route::getRoutes();
+
+    foreach ($routes as $route) {
+        if ($route->getName() && str_contains($route->uri(), "apple/posts")) {
+            $name = $route->getName();
+            // Get locale working
+            $locale = explode('.', $name)[0];
+            expect($route->getLocale())->toBe($locale);
+            if(str_contains($name, config('localized-routes-plus.default_locale'))) {
+                expect($route->uri())->not()->toContain(config('localized-routes-plus.default_locale'));
+            } else {
+                expect($route->uri())->toContain($locale.'/apple/posts');
+            }
+        }
+    }
+});
+
+test('resource routes create routes for all locales with custom prefix and use_route_prefix_in_default_locale is true', function () {
+    // Létrehozunk egy lokalizált resource route-ot
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', true);
+    Route::resource('apple/posts', 'PostController')->localized()->names('posts');
+
+    // Ellenőrizzük, hogy mindkét locale-hoz létrejöttek a route-ok
+    $routes = Route::getRoutes();
+
+    foreach ($routes as $route) {
+        if ($route->getName() && str_contains($route->uri(), "apple/posts")) {
+            $name = $route->getName();
+            $locale = explode('.', $name)[0];
+            // Get locale working
+            expect($route->getLocale())->toBe($locale);
+            expect($route->uri())->toContain($locale.'/apple/posts');
+        }
+    }
+});
+
+test('can get route uri for specific locale', function () {
+    Route::resource('apple/posts', 'PostController')->localized()->names('posts');
+
+    $routes = Route::getRoutes();
+    $route = $routes->getByName('en.posts.index');
+    expect($route->getRouteUri('hu'))->toBe('hu/apple/posts');
+    expect($route->getRouteUri('en'))->toBe('apple/posts');
+});
+
 
 test('resource routes with custom names create routes for all locales', function () {
     // Létrehozunk egy lokalizált resource route-ot egyedi nevekkel

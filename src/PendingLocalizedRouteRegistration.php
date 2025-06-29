@@ -7,12 +7,35 @@ use Illuminate\Routing\Route;
 
 class PendingLocalizedRouteRegistration extends PendingResourceRegistration
 {
+    /**
+     * If true the localized functions will be called.
+     */
     protected bool $mustBeLocalized = false;
 
-    public function localized(): self
+    /**
+     * The locales to be localized.
+     */
+    protected array $locales = [];
+
+
+    /**
+     * If true, the URI is already localized.
+     * Used for resource auto registering prefixes
+     */
+    protected bool $uriLocalized = false;
+
+    public function localized(array|string $locales = []): self
     {
         $this->mustBeLocalized = true;
+        if(is_string($locales)) {
+            $locales = [$locales];
+        }
+        $this->locales = $locales;
+        return $this;
+    }
 
+    public function uriLocalized() {
+        $this->uriLocalized = true;
         return $this;
     }
 
@@ -25,8 +48,17 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
     {
         $this->registered = true;
 
+        $locales = [];
+        if($this->mustBeLocalized) {
+            if(empty($this->locales)) {
+                $locales = config('localized-routes-plus.locales');
+            } else {
+                $locales = $this->locales;
+            }
+        }
+
         return $this->registrar->registerLocalized(
-            $this->name, $this->controller, $this->options
+            $this->name, $this->controller, $this->options, $locales, $this->uriLocalized
         );
     }
 }
