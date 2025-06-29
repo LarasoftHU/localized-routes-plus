@@ -2,7 +2,7 @@
 
 // config for LarasoftHU/LocalizedRoutesPlus
 return [
-    
+
     'locales' => [
         env('APP_LOCALE', 'en'),
     ],

@@ -4,8 +4,8 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 
 use BackedEnum;
 use Illuminate\Routing\Route;
-use InvalidArgumentException;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class LocalizedRoute extends Route
 {
@@ -13,43 +13,42 @@ class LocalizedRoute extends Route
 
     protected bool $isProcessed = false;
 
-
     /**
      * The locale of the route.
-     *
-     * @var string
      */
     protected string $locale;
 
     /**
      * Get the locale of the route.
-     *
-     * @return string
      */
-    public function getLocale() : string {
+    public function getLocale(): string
+    {
         return $this->locale;
     }
 
     /**
      * Set the locale of the route.
      *
-     * @param string $locale
      * @return $this
      */
-    public function setLocale(string $locale) : self {
+    public function setLocale(string $locale): self
+    {
         $this->locale = $locale;
+
         return $this;
     }
 
-    private function setLocaleWithUriAndName(string $locale) : self {
+    private function setLocaleWithUriAndName(string $locale): self
+    {
         $this->locale = $locale;
         // $locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false
-        if(!($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)) {
+        if (! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)) {
             $this->uri = $this->locale.'/'.$this->uri;
         }
-        if($this->getName()) {
+        if ($this->getName()) {
             $this->action['as'] = $this->locale.'.'.$this->action['as'];
         }
+
         return $this;
     }
 
@@ -71,7 +70,7 @@ class LocalizedRoute extends Route
     /**
      * Set the name of the route.
      *
-     * @param string $name
+     * @param  string  $name
      * @return $this
      */
     public function name($name): self
@@ -93,18 +92,16 @@ class LocalizedRoute extends Route
 
     /**
      * Process the localization of the route.
-     *
-     * @return void
      */
     protected function processLocalization(): void
     {
         $this->isProcessed = true;
 
         $originalName = $this->action['as'] ?? null;
-        
+
         $locales = config('localized-routes-plus.locales', ['en']);
         $defaultLocale = config('localized-routes-plus.default_locale', 'en');
-        
+
         $original = clone $this;
 
         // Az eredeti route-ot átnevezzük a default locale-lal
@@ -130,23 +127,24 @@ class LocalizedRoute extends Route
         }
     }
 
-
     /**
      * Get the uri of the route for a specific locale.
      *
-     * @param string|null $locale If null, return the uri of the route for the current locale.
-     * @return string
+     * @param  string|null  $locale  If null, return the uri of the route for the current locale.
      */
-    public function getRouteUri($locale = null) : string {
-        if($locale) {
+    public function getRouteUri($locale = null): string
+    {
+        if ($locale) {
             $name = $this->action['as'];
             $safeName = Str::replaceFirst(
                 $this->locale.'.',
                 '',
                 $name
             );
+
             return $this->router->getRoutes()->getByName($locale.'.'.$safeName)->uri;
         }
+
         return $this->uri;
     }
 }

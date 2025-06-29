@@ -8,10 +8,10 @@ use Illuminate\Routing\Router;
 
 class LocalizedResourceRegistrar extends ResourceRegistrar
 {
-
     public $locale;
 
     public $uriLocalized = false;
+
     /**
      * Register a localized resource route.
      *
@@ -19,7 +19,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      */
     public function registerLocalized(string $name, string $controller, array $options = [], array $locales = [], bool $uriLocalized = false)
     {
-        if(!empty($locales)) {
+        if (! empty($locales)) {
             $collection = new RouteCollection;
             $this->uriLocalized = $uriLocalized;
 
@@ -28,6 +28,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                 $copy->locale = $locale;
                 $copy->register($name, $controller, $options, $collection);
             }
+
             return $collection;
         } else {
             return $this->register($name, $controller, $options);
@@ -42,10 +43,11 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      */
     public function getResourceUri($resource)
     {
-        if($this->locale && !$this->uriLocalized) {
-            if($this->locale === config('localized-routes-plus.default_locale') && !config('localized-routes-plus.use_route_prefix_in_default_locale')) {
+        if ($this->locale && ! $this->uriLocalized) {
+            if ($this->locale === config('localized-routes-plus.default_locale') && ! config('localized-routes-plus.use_route_prefix_in_default_locale')) {
                 return $this->getResourceUriWithoutLocale($resource);
             }
+
             return '/'.$this->locale.'/'.$this->getResourceUriWithoutLocale($resource);
         } else {
             return $this->getResourceUriWithoutLocale($resource);
@@ -66,7 +68,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         $uri = $this->getNestedResourceUri($segments);
 
         return str_replace('/{'.$this->getResourceWildcard(end($segments)).'}', '', $uri);
-        
+
     }
 
     /**
@@ -79,12 +81,13 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      */
     protected function getResourceRouteName($resource, $method, $options)
     {
-       if ($this->locale) {
-        return $this->locale.'.'.$this->getResourceRouteNameWithoutLocale($resource, $method, $options);
-       } else {
-        return $this->getResourceRouteNameWithoutLocale($resource, $method, $options);
-       }
+        if ($this->locale) {
+            return $this->locale.'.'.$this->getResourceRouteNameWithoutLocale($resource, $method, $options);
+        } else {
+            return $this->getResourceRouteNameWithoutLocale($resource, $method, $options);
+        }
     }
+
     /**
      * Get the name for a given resource.
      *
@@ -121,14 +124,13 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      *
      * @param  string  $name
      * @param  string  $controller
-     * @param  array  $options
      * @return \Illuminate\Routing\Router
      */
     protected function prefixedResource($name, $controller, array $options)
     {
         [$name, $prefix] = $this->getResourcePrefix($name);
 
-        if($this->doInjectLocaleForUri()) {
+        if ($this->doInjectLocaleForUri()) {
             $prefix = '/'.$this->locale.'/'.$prefix;
         }
 
@@ -142,14 +144,16 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         return $this->router->group(compact('prefix'), $callback);
     }
 
-    private function doInjectLocaleForUri() : bool {
-        if(!empty($this->locale)){
-            if($this->locale === config('localized-routes-plus.default_locale') && !config('localized-routes-plus.use_route_prefix_in_default_locale')) {
+    private function doInjectLocaleForUri(): bool
+    {
+        if (! empty($this->locale)) {
+            if ($this->locale === config('localized-routes-plus.default_locale') && ! config('localized-routes-plus.use_route_prefix_in_default_locale')) {
                 return false;
             }
-            
+
             return true;
         }
+
         return false;
     }
 
@@ -171,6 +175,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         // the box so they don't have to mess with it. Otherwise, we will continue.
         if (str_contains($name, '/')) {
             $this->prefixedResource($name, $controller, $options);
+
             return;
         }
 
@@ -205,7 +210,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                 $name, $base, $controller, $optionsForMethod
             );
 
-            if($this->locale) {
+            if ($this->locale) {
                 $route->setLocale($this->locale);
             }
 

@@ -17,7 +17,6 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
      */
     protected array $locales = [];
 
-
     /**
      * If true, the URI is already localized.
      * Used for resource auto registering prefixes
@@ -27,15 +26,18 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
     public function localized(array|string $locales = []): self
     {
         $this->mustBeLocalized = true;
-        if(is_string($locales)) {
+        if (is_string($locales)) {
             $locales = [$locales];
         }
         $this->locales = $locales;
+
         return $this;
     }
 
-    public function uriLocalized() {
+    public function uriLocalized()
+    {
         $this->uriLocalized = true;
+
         return $this;
     }
 
@@ -49,8 +51,8 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
         $this->registered = true;
 
         $locales = [];
-        if($this->mustBeLocalized) {
-            if(empty($this->locales)) {
+        if ($this->mustBeLocalized) {
+            if (empty($this->locales)) {
                 $locales = config('localized-routes-plus.locales');
             } else {
                 $locales = $this->locales;

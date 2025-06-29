@@ -19,7 +19,7 @@ it('set localized route name', function () {
 });
 
 it('creates routes for all locales', function () {
-    
+
     config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
     config()->set('localized-routes-plus.default_locale', 'en');
 
@@ -202,9 +202,8 @@ test('resource routes create routes for all locales', function () {
     expect($routeNames)->toContain('hu.posts.edit');
     expect($routeNames)->toContain('hu.posts.update');
     expect($routeNames)->toContain('hu.posts.destroy');
-    
-});
 
+});
 
 test('resource routes create routes for all locales with custom prefix', function () {
     // Létrehozunk egy lokalizált resource route-ot
@@ -214,12 +213,12 @@ test('resource routes create routes for all locales with custom prefix', functio
     $routes = Route::getRoutes();
 
     foreach ($routes as $route) {
-        if ($route->getName() && str_contains($route->uri(), "apple/posts")) {
+        if ($route->getName() && str_contains($route->uri(), 'apple/posts')) {
             $name = $route->getName();
             // Get locale working
             $locale = explode('.', $name)[0];
             expect($route->getLocale())->toBe($locale);
-            if(str_contains($name, config('localized-routes-plus.default_locale'))) {
+            if (str_contains($name, config('localized-routes-plus.default_locale'))) {
                 expect($route->uri())->not()->toContain(config('localized-routes-plus.default_locale'));
             } else {
                 expect($route->uri())->toContain($locale.'/apple/posts');
@@ -237,7 +236,7 @@ test('resource routes create routes for all locales with custom prefix and use_r
     $routes = Route::getRoutes();
 
     foreach ($routes as $route) {
-        if ($route->getName() && str_contains($route->uri(), "apple/posts")) {
+        if ($route->getName() && str_contains($route->uri(), 'apple/posts')) {
             $name = $route->getName();
             $locale = explode('.', $name)[0];
             // Get locale working
@@ -255,7 +254,6 @@ test('can get route uri for specific locale', function () {
     expect($route->getRouteUri('hu'))->toBe('hu/apple/posts');
     expect($route->getRouteUri('en'))->toBe('apple/posts');
 });
-
 
 test('resource routes with custom names create routes for all locales', function () {
     // Létrehozunk egy lokalizált resource route-ot egyedi nevekkel
