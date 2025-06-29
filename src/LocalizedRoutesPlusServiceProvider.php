@@ -28,6 +28,13 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         Route::setFacadeApplication($this->app);
     }
 
+    protected function registerRouter()
+    {
+        $this->app->singleton('router', function ($app) {
+            return new LocalizedRouter($app['events'], $app);
+        });
+    }
+
     public function boot()
     {
         parent::boot();
