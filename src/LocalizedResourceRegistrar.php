@@ -11,6 +11,8 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 {
     public $locale;
 
+    public $locales = [];
+
     public $uriLocalized = false;
 
     /**
@@ -24,13 +26,38 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
             $collection = new RouteCollection;
             $this->uriLocalized = $uriLocalized;
 
-            foreach ($locales as $locale) {
-                $copy = clone $this;
-                $copy->locale = $locale;
-                $copy->register($name, $controller, $options, $collection);
+            // Check if this is a prefixed resource (contains slash) AND using subdomains
+            if (str_contains($name, '/') && config('localized-routes-plus.use_subdomains_instead_of_prefixes')) {
+                // For prefixed resources with subdomains, we need to handle all locales at once
+                $this->locales = $locales;
+                $this->register($name, $controller, $options);
+                
+                // Return empty collection as routes are registered directly to router
+                return $collection;
+            } else {
+                foreach ($locales as $locale) {
+                    $copy = clone $this;
+                    $copy->locale = $locale;
+                    
+                    // For regular resources and prefix mode, process each locale separately
+                    if (str_contains($name, '/')) {
+                        // For prefixed resources, routes are registered directly to the router
+                        $copy->register($name, $controller, $options);
+                    } else {
+                        // For regular resources, we can get the collection back
+                        $localeCollection = $copy->register($name, $controller, $options);
+                        
+                        if ($localeCollection) {
+                            // Add all routes from the locale-specific collection to the main collection
+                            foreach ($localeCollection->getRoutes() as $route) {
+                                $collection->add($route);
+                            }
+                        }
+                    }
+                }
+                
+                return $collection;
             }
-
-            return $collection;
         } else {
             return $this->register($name, $controller, $options);
         }
@@ -136,8 +163,17 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         // place-holder on the route parameters, which should be the base resources.
         $callback = function ($me) use ($name, $controller, $options) {
             $resource = $me->resource($name, $controller, $options);
-            if($this->locale){
-                $resource->localized($this->locale)->uriLocalized();
+            
+            // If we have multiple locales to process (from registerLocalized) and using subdomains
+            if (!empty($this->locales) && config('localized-routes-plus.use_subdomains_instead_of_prefixes')) {
+                $resource->localized($this->locales);
+            } elseif ($this->locale) {
+                // For subdomain mode, we don't need uriLocalized since domains handle localization
+                if (config('localized-routes-plus.use_subdomains_instead_of_prefixes')) {
+                    $resource->localized();
+                } else {
+                    $resource->localized($this->locale)->uriLocalized();
+                }
             }
         };
 
@@ -184,7 +220,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         if (str_contains($name, '/')) {
             $this->prefixedResource($name, $controller, $options);
 
-            return;
+            return new RouteCollection;
         }
 
         // We need to extract the base resource from the resource name. Nested resources
@@ -246,7 +282,6 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
                 if(is_array(config('localized-routes-plus.domains')[$this->locale])){
                     if(count(config('localized-routes-plus.domains')[$this->locale]) > 0){
-                        //dd(config('localized-routes-plus.domains')[$locale][0]);
                         $originalName = $route->action['as'];
                         $domains = config('localized-routes-plus.domains')[$this->locale];
                         $route = $route->domain($domains[0]);
@@ -255,17 +290,15 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                             $copy = clone $route;
                             $copy->domain($domains[$i]);
                             $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
+                            $this->router->getRoutes()->add($copy);
                         }
                     }
                 }else {
                     $domain = config('localized-routes-plus.domains')[$this->locale];
                     $route = $route->domain(config('localized-routes-plus.domains')[$this->locale]);
-                    if($domain == 'apple.example.hu') {
-                        //dd('260', $route->uri(), $domain, $route->getDomain());
-                    }
                 }
             } else {
-                throw new \Exception('Domain not found for locale: '.$this->locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$this->locale.'\') method.');
+                throw new \InvalidArgumentException('Domain not found for locale: '.$this->locale. ' If you want to exclude this locale, you can use the localizedExcept(\''.$this->locale.'\') method.');
             }
         }
 

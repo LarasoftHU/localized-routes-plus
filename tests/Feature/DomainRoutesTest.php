@@ -266,6 +266,9 @@ it('Works with subdomain Resource routes with custom prefix', function () {
   $foundDomains = [];
   $formattedRoutes = [];
   foreach ($routes as $route) {
+    if($route->getName() && str_contains($route->getName(), 'example')) {
+      $foundDomains[] = $route->getDomain();
+    }
     $formattedRoutes[] = [
       'name' => $route->getName(),
       'locale' => $route->getLocale(),
@@ -274,7 +277,15 @@ it('Works with subdomain Resource routes with custom prefix', function () {
     ];
   }
 
+  // Debug: remove duplicates to properly check missing domains
+  $foundDomains = array_unique($foundDomains);
   $missingDomains = array_diff($allDomains, $foundDomains);
+  
+  // Debug information - uncomment to see what's happening
+  // echo "All domains: " . print_r($allDomains, true);
+  // echo "Found domains: " . print_r($foundDomains, true);
+  // echo "Missing domains: " . print_r($missingDomains, true);
+  
   expect($missingDomains)->toBe([]);
 });
 
@@ -414,13 +425,11 @@ it('Works with multiple subdomain for single language Resource routes with custo
         'example.de'
       ]
   ]);
-  // for testing purposes
+  // for testing purposes - only include domains for locales that will be generated (excluding 'de')
   $allDomains = [
-    'example.com',
-    'example.hu',
-    'de.example.com',
-    'de2.example.com',
-    'example.de',
+    'example.com',  // en
+    'example.hu',   // hu
+    // 'de' locale is excluded by localizedExcept('de')
   ];
 
   Route::resource('apple/example', 'PostController')->names('example')->localizedExcept('de');
@@ -450,7 +459,14 @@ it('Works with multiple subdomain for single language Resource routes with custo
     }
   }
 
+  // Remove duplicates to properly check missing domains
+  $foundDomains = array_unique($foundDomains);
   $missingDomains = array_diff($allDomains, $foundDomains);
+
+  // Debug information
+  // echo "Test 2 - All domains: " . print_r($allDomains, true);
+  // echo "Test 2 - Found domains: " . print_r($foundDomains, true);
+  // echo "Test 2 - Missing domains: " . print_r($missingDomains, true);
 
   expect($missingDomains)->toBe([]);
 });

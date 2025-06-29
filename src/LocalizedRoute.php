@@ -17,14 +17,14 @@ class LocalizedRoute extends Route
     /**
      * The locale of the route.
      */
-    protected string $locale;
+    protected ?string $locale = null;
 
     /**
      * Get the locale of the route.
      */
     public function getLocale(): ?string
     {
-        return $this->locale?? null;
+        return $this->locale ?? null;
     }
 
     /**
@@ -159,7 +159,7 @@ class LocalizedRoute extends Route
 
         // Ha localized és még nem dolgoztuk fel, feldolgozzuk
         if ($this->isProcessed) {
-            throw new \Exception('Route already processed! Name must be set before localized() is called.');
+            throw new InvalidArgumentException('Route already processed! Name must be set before localized() is called.');
         }
 
         return $this;
