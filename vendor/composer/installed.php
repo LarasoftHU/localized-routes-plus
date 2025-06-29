@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'kapasifulop/localized-routes-plus',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '9eb3c68bea81cf6506d19b9d4f02c9596edf4d95',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -425,9 +425,9 @@
             'dev_requirement' => true,
         ),
         'kapasifulop/localized-routes-plus' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '9eb3c68bea81cf6506d19b9d4f02c9596edf4d95',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
