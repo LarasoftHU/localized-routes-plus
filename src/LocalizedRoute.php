@@ -88,9 +88,8 @@ class LocalizedRoute extends Route
             if (
                 ! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)
             ) {
-
-                    $this->uri = $this->locale.'/'.$this->uri;
-
+                // Fix: Properly handle root URI ('/') to avoid double slashes
+                $this->uri = rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/');
             }
         }
 
