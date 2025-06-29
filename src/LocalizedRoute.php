@@ -317,11 +317,19 @@ class LocalizedRoute extends Route
      */
     public function getSafeName(): string
     {
-        return Str::replaceFirst(
-            $this->locale.'.',
-            '',
-            $this->action['as']
-        );
+        if(!config('localized-routes-plus.use_countries')){
+            return Str::replaceFirst(
+                $this->locale.'.',
+                '',
+                $this->action['as']
+            );
+        }else {
+            return Str::replaceFirst(
+                $this->locale.'-'.$this->country.'.',
+                '',
+                $this->action['as']
+        ); 
+    }
     }
 
     /**
