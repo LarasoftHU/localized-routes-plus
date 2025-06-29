@@ -96,36 +96,7 @@ class LocalizedRoute extends Route
 
         return $this;
     }
-
-    /**
-     * Get or set the domain for the route.
-     *
-     * @param  \BackedEnum|string|null  $domain
-     * @return $this|string|null
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function domain($domain = null)
-    {
-        if (is_null($domain)) {
-            return $this->getDomain();
-        }
-
-        if ($domain instanceof BackedEnum && ! is_string($domain = $domain->value)) {
-            throw new InvalidArgumentException('Enum must be string backed.');
-        }
-
-        $parsed = RouteUri::parse($domain);
-
-        $this->action['domain'] = $parsed->uri;
-
-        $this->bindingFields = array_merge(
-            $this->bindingFields, $parsed->bindingFields
-        );
-
-        return $this;
-    }
-
+    
     /**
      * Mark the route as localized.
      *
@@ -202,37 +173,6 @@ class LocalizedRoute extends Route
         $this->router->getRoutes()->refreshNameLookups();
         $this->router->getRoutes()->refreshActionLookups();
     }
-    /*
-    protected function processLocalization(): void
-    {
-        $this->isProcessed = true;
-
-        $originalName = $this->action['as'] ?? null;
-
-        $locales = config('localized-routes-plus.locales', ['en']);
-        $defaultLocale = config('localized-routes-plus.default_locale', 'en');
-
-        $original = clone $this;
-
-        // Létrehozzuk az összes locale-hoz a route-okat (beleértve a default-ot is)
-        foreach ($locales as $locale) {
-            $newAction = $original->action;
-            $newAction['as'] = $originalName;
-
-            // Új route regisztrálása minden locale-hoz
-            $newRoute = new LocalizedRoute($original->methods(), $original->uri(), $newAction);
-            $newRoute->setRouter($this->router)->setContainer($this->container);
-            
-            // Hozzáadjuk a route collection-höz
-            $newRoute->setLocaleWithUriAndName($locale);
-            $this->router->getRoutes()->add($newRoute);
-        }
-
-        // KRITIKUS: Frissítjük a RouteCollection name lookup cache-t
-        $this->router->getRoutes()->refreshNameLookups();
-        $this->router->getRoutes()->refreshActionLookups();
-    }
-    */
 
     /**
      * Get the uri of the route for a specific locale.
