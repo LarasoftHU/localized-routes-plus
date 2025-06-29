@@ -25,10 +25,13 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         // register these resource routes with a prefix so we will set that up out of
         // the box so they don't have to mess with it. Otherwise, we will continue.
         
+        /*
+        //TODO:PREFIX NOT USPPORTED JET
         if (str_contains($name, '/')) {
             $this->prefixedResource($name, $controller, $options, $locales);
             return;
         }
+        */
 
         // We need to extract the base resource from the resource name. Nested resources
         // are supported in the framework, but we need to know what name to use for a

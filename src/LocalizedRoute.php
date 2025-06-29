@@ -192,12 +192,6 @@ class LocalizedRoute extends Route
                 // Fix: Properly handle root URI ('/') to avoid double slashes
                 $groupStack = last($this->router->getGroupStack());
                 if($groupStack && isset($groupStack['prefix'])){
-                    $prefixToRemove = $groupStack['prefix'];
-
-                    //HELP: i don't know why this is needed, but it is :)
-                    if(str_starts_with($this->uri, $prefixToRemove) && $locale != config('localized-routes-plus.default_locale')){
-                        $this->uri = ltrim($this->uri, $prefixToRemove);
-                    }
                     $this->setUri(rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/'));
                 }else {
                     $this->uri = rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/');
