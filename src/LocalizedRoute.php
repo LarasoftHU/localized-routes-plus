@@ -199,7 +199,40 @@ class LocalizedRoute extends Route
                 $this->router->getRoutes()->add($newRoute);
             }
         }
+        $this->router->getRoutes()->refreshNameLookups();
+        $this->router->getRoutes()->refreshActionLookups();
     }
+    /*
+    protected function processLocalization(): void
+    {
+        $this->isProcessed = true;
+
+        $originalName = $this->action['as'] ?? null;
+
+        $locales = config('localized-routes-plus.locales', ['en']);
+        $defaultLocale = config('localized-routes-plus.default_locale', 'en');
+
+        $original = clone $this;
+
+        // Létrehozzuk az összes locale-hoz a route-okat (beleértve a default-ot is)
+        foreach ($locales as $locale) {
+            $newAction = $original->action;
+            $newAction['as'] = $originalName;
+
+            // Új route regisztrálása minden locale-hoz
+            $newRoute = new LocalizedRoute($original->methods(), $original->uri(), $newAction);
+            $newRoute->setRouter($this->router)->setContainer($this->container);
+            
+            // Hozzáadjuk a route collection-höz
+            $newRoute->setLocaleWithUriAndName($locale);
+            $this->router->getRoutes()->add($newRoute);
+        }
+
+        // KRITIKUS: Frissítjük a RouteCollection name lookup cache-t
+        $this->router->getRoutes()->refreshNameLookups();
+        $this->router->getRoutes()->refreshActionLookups();
+    }
+    */
 
     /**
      * Get the uri of the route for a specific locale.
