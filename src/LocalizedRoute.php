@@ -151,7 +151,15 @@ class LocalizedRoute extends Route
         $this->locale = $locale;
 
         if ($this->getName()) {
-            $this->action['as'] = $this->locale.'.'.$this->action['as'];
+            if(config('localized-routes-plus.use_countries')){
+                if(is_array(config('localized-routes-plus.countries')[$locale])){
+                    $this->action['as'] = $this->locale.'-'.config('localized-routes-plus.countries')[$locale][0].'.'.$this->action['as'];
+                }else{
+                    $this->action['as'] = $this->locale.'-'.config('localized-routes-plus.countries')[$locale].'.'.$this->action['as'];
+                }
+            }else{
+                $this->action['as'] = $this->locale.'.'.$this->action['as'];
+            }
         }
 
         // Subdomains are handled here
