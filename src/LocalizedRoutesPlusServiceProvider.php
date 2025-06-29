@@ -35,7 +35,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         parent::boot();
 
         Application::macro('getCountry', function () {
-            return $this['config']->get('app.country', 'HU');
+            return $this['config']->get('app.country', session()->has('country') ? session('country') : 'HU');
         });
 
         Application::macro('setCountry', function ($country) {
