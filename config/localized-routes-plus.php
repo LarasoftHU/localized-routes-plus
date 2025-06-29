@@ -27,4 +27,7 @@ return [
         'en' => 'us',
         'de' => 'gb',
     ],
+    
+    // the default country for the default locale
+    'default_country' => 'us',
 ];

@@ -166,10 +166,11 @@ class LocalizedRoute extends Route
                         $this->domain($domains[0]);
                         $this->action['as'] = explode('.', $domains[0])[0].'-'.$originalName;
                         for ($i = 1, $count = count($domains); $i < $count; $i++) {
-
                             $copy = clone $this;
                             $copy->domain($domains[$i]);
-                            $copy->action['as'] = explode('.', $domains[$i])[0].'-'.$originalName;
+                            if($copy->getName()){
+                                $copy->action['as'] = explode('.', $copy->action['as'])[0].'-'.$originalName;
+                            }
                             $this->router->getRoutes()->add($copy);
                         }
                     }
@@ -189,10 +190,32 @@ class LocalizedRoute extends Route
                 $prefix = $this->locale;
 
                 if(config('localized-routes-plus.use_countries')){
-                    if(config('localized-routes-plus.country_path_separator') == 'dash'){
-                        $prefix = $prefix.'-'.config('localized-routes-plus.countries')[$locale];
+                    $separator = config('localized-routes-plus.country_path_separator') == 'dash' ? '-' : '/';
+                    $countryForLocale = config('localized-routes-plus.countries')[$locale];
+
+                    if(is_array($countryForLocale)){
+                        $prefix = $prefix.$separator.$countryForLocale[0];
+
+                        for ($i = 1, $count = count($countryForLocale); $i < $count; $i++) {
+                            $copy = clone $this;
+
+                            $_prefix = $locale.$separator.$countryForLocale[$i];
+                            
+                            $groupStack = last($this->router->getGroupStack());
+                            if ($groupStack && isset($groupStack['prefix'])) {
+                                $copy->setUri(rtrim($_prefix.'/'.ltrim($this->uri, '/'), '/'));
+                            }else {
+                                $copy->uri = rtrim($_prefix.'/'.ltrim($this->uri, '/'), '/');
+                            }
+
+                            if($copy->getName()){
+                                $copy->action['as'] = $_prefix.'.'.$copy->getSafeName();
+                            }
+
+                            $this->router->getRoutes()->add($copy);
+                        }
                     } else {
-                        $prefix = $prefix.'/'.config('localized-routes-plus.countries')[$locale];
+                        $prefix = $prefix.$separator.$countryForLocale;
                     }
                 }
 
