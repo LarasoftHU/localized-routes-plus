@@ -7,5 +7,6 @@ parameters:
     ignoreErrors:
         - '#Call to an undefined method Illuminate\\Routing\\Route::(localized|getLocale|getCountry|getUrl|getSafeName|localizedExcept)\(\)#'
         - '#Call to an undefined method Illuminate\\Routing\\PendingResourceRegistration::(localized|localizedExcept)\(\)#'
+        - '#Call to an undefined method Illuminate\\Foundation\\Application::(setCountry|getCountry)\(\)#'
         - '#Argument of an invalid type Illuminate\\Routing\\RouteCollectionInterface supplied for foreach, only iterables are supported#'
         - '#Parameter .* of function expect contains unresolvable type#'

@@ -4,7 +4,6 @@ namespace LarasoftHU\LocalizedRoutesPlus\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use LarasoftHU\LocalizedRoutesPlus\LocalizedRoute;
 
 class SetCountryFromRoute
@@ -23,7 +22,7 @@ class SetCountryFromRoute
             $country = $route->getCountry();
 
             if ($country) {
-                App::setCountry($country);
+                app()->setCountry($country);
             }
         }
 
