@@ -21,14 +21,10 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     {
         parent::register();
 
-        // Lecseréljük a router instance-t a saját LocalizedRouter-ünkre
-        /*
-        $this->app->singleton('router', function ($app) {
-            return new Router($app['events'], $app);
+        // A router-t helyesen felülírjuk a Laravel 12-ben
+        $this->app->extend('router', function ($router, $app) {
+            return new LocalizedRouter($app['events'], $app);
         });
-        */
-
-        $this->app->bind(Route::class, LocalizedRouter::class);
     }
 
     public function boot()
