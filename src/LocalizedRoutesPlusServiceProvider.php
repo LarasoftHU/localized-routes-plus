@@ -3,8 +3,6 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
-use LarasoftHU\LocalizedRoutesPlus\Commands\LocalizedRoutesPlusCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -25,6 +23,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         $this->app->extend('router', function ($router, $app) {
             $_router = new LocalizedRouter($app['events'], $app);
             $_router->setRoutes($router->getRoutes());
+
             return $_router;
         });
     }

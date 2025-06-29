@@ -80,7 +80,7 @@ class PendingLocalizedRouteRegistration extends PendingResourceRegistration
                 $locales = $this->locales;
             }
         }
-        
+
         return $this->registrar->register(
             $this->name, $this->controller, $this->options, $locales
         );

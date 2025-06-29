@@ -24,7 +24,7 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
         // If the resource name contains a slash, we will assume the developer wishes to
         // register these resource routes with a prefix so we will set that up out of
         // the box so they don't have to mess with it. Otherwise, we will continue.
-        
+
         /*
         //TODO:PREFIX NOT USPPORTED JET
         if (str_contains($name, '/')) {
@@ -71,13 +71,13 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
                 $route->withTrashed();
             }
 
-            if($locales && count($locales) > 0) {
+            if ($locales && count($locales) > 0) {
                 $route = $route->localized($locales);
             }
 
             $collection->add($route);
         }
-        
+
         return $collection;
     }
 
@@ -86,19 +86,18 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      *
      * @param  string  $name
      * @param  string  $controller
-     * @param  array  $options
      * @return \Illuminate\Routing\Router
      */
     protected function prefixedResource($name, $controller, array $options, array $locales = [])
     {
         [$name, $prefix] = $this->getResourcePrefix($name);
-    
+
         // We need to extract the base resource from the resource name. Nested resources
         // are supported in the framework, but we need to know what name to use for a
         // place-holder on the route parameters, which should be the base resources.
         $callback = function ($me) use ($name, $controller, $options, $locales) {
             $resource = $me->resource($name, $controller, $options);
-            if($locales && count($locales) > 0){
+            if ($locales && count($locales) > 0) {
                 $resource->localized($locales);
             }
         };
