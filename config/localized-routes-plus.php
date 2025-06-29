@@ -18,4 +18,13 @@ return [
     ],
 
     'use_route_prefix_in_default_locale' => false,
+
+    // THIS WONT WORK WITH SUBDOMAINS
+    'use_countries' => false,
+    'country_path_separator' => 'dash', // 'dash' for /locale-country or 'slash' for /locale/country
+    'countries' => [ // you can add lovercase country codes here, but it will be converted to uppercase
+        'hu' => 'hu',
+        'en' => 'us',
+        'de' => 'gb',
+    ],
 ];

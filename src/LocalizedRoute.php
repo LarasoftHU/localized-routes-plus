@@ -185,11 +185,22 @@ class LocalizedRoute extends Route
                 ! ($locale == config('localized-routes-plus.default_locale') && config('localized-routes-plus.use_route_prefix_in_default_locale') == false)
             ) {
                 // Fix: Properly handle root URI ('/') to avoid double slashes
+
+                $prefix = $this->locale;
+
+                if(config('localized-routes-plus.use_countries')){
+                    if(config('localized-routes-plus.country_path_separator') == 'dash'){
+                        $prefix = $prefix.'-'.config('localized-routes-plus.countries')[$locale];
+                    } else {
+                        $prefix = $prefix.'/'.config('localized-routes-plus.countries')[$locale];
+                    }
+                }
+
                 $groupStack = last($this->router->getGroupStack());
                 if ($groupStack && isset($groupStack['prefix'])) {
-                    $this->setUri(rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/'));
+                    $this->setUri(rtrim($prefix.'/'.ltrim($this->uri, '/'), '/'));
                 } else {
-                    $this->uri = rtrim($this->locale.'/'.ltrim($this->uri, '/'), '/');
+                    $this->uri = rtrim($prefix.'/'.ltrim($this->uri, '/'), '/');
                 }
             }
         }

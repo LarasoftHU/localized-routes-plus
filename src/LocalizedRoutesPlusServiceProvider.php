@@ -2,6 +2,7 @@
 
 namespace LarasoftHU\LocalizedRoutesPlus;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
 use LarasoftHU\LocalizedRoutesPlus\Middleware\SetLocaleFromRoute;
 use Spatie\LaravelPackageTools\Package;
@@ -32,5 +33,14 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
+
+        Application::macro('getCountry', function () {
+            return $this['config']->get('app.country', 'HU');
+        });
+
+        Application::macro('setCountry', function ($country) {
+            $this['config']->set('app.country', $country);
+            return $this; // chainable
+        });
     }
 }
