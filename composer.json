@@ -63,7 +63,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "LarasoftHU\\LocalizedRoutesPlus\\LocalizedRoutesPlusServiceProvider"
+                "LarasoftHU\\LocalizedRoutesPlus\\RouteServiceProvider",
+                "LarasoftHU\\LocalizedRoutesPlus\\LocalizedRoutesPlusServiceProvider",
             ],
             "aliases": {
                 "LocalizedRoutesPlus": "LarasoftHU\\LocalizedRoutesPlus\\Facades\\LocalizedRoutesPlus"
