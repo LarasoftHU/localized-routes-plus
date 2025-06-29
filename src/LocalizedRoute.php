@@ -14,6 +14,13 @@ class LocalizedRoute extends Route
 
     protected bool $isProcessed = false;
 
+    public function __construct($methods, $uri, $action)
+    {
+        parent::__construct($methods, $uri, $action);
+        $this->isLocalized = false;
+        $this->isProcessed = false;
+    }
+
     /**
      * The locale of the route.
      */
@@ -96,7 +103,7 @@ class LocalizedRoute extends Route
 
         return $this;
     }
-    
+
     /**
      * Mark the route as localized.
      *
