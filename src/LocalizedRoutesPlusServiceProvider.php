@@ -32,9 +32,5 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
-        
-        // Globális middleware regisztrálása web kérésekhez
-        $router = $this->app->make('router');
-        $router->pushMiddlewareToGroup('web', SetLocaleFromRoute::class);
     }
 }

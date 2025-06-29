@@ -5,6 +5,7 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use LarasoftHU\LocalizedRoutesPlus\Middleware\SetLocaleFromRoute;
 
 class LocalizedRoute extends Route
 {
@@ -24,6 +25,8 @@ class LocalizedRoute extends Route
         parent::__construct($methods, $uri, $action);
         $this->isLocalized = false;
         $this->isProcessed = false;
+
+        $this->middleware(SetLocaleFromRoute::class);
     }
 
     /**
