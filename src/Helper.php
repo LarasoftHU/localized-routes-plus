@@ -16,3 +16,30 @@ if (! function_exists('route_is')) {
         return $route !== null && $route->is($name);
     }
 }
+
+if (! function_exists('localized_route')) {
+    function localized_route(string $name, array $parameters = [], bool $absolute = true, ?bool $locale = null, ?bool $country = null)
+    {
+        if (config('localized-routes-plus.use_countries')) {
+            if (! $locale) {
+                $locale = app()->getLocale();
+            }
+            if (! $country) {
+                $country = app()->getCountry();
+            }
+            $name = $locale.'-'.$country.'.'.$name;
+        } else {
+            if (! $locale) {
+                $locale = app()->getLocale();
+            }
+            $name = $locale.'.'.$name;
+        }
+        $route = app('router')->getRoutes()->getByName($name);
+
+        if (! $route) {
+            return null;
+        }
+
+        return $route->getUrl();
+    }
+}
