@@ -150,15 +150,10 @@ class LocalizedRoute extends Route
         // Létrehozzuk a többi locale-hoz is a route-okat
         foreach ($locales as $locale) {
             if ($locale !== $defaultLocale) {
-                $newAction = $original->action;
-                $newAction['as'] = $originalName;
-
                 // Új route regisztrálása - használjuk a normál Route osztályt, ne a LocalizedRoute-ot
-                $newRoute = new LocalizedRoute($original->methods(), $original->uri(), $newAction);
-                $newRoute->setRouter($this->router)->setContainer($this->container);
-
-                // Hozzáadjuk a route collection-höz
+                $newRoute = clone $original;
                 $newRoute->setLocaleWithUriAndName($locale);
+                // Hozzáadjuk a route collection-höz
                 $this->router->getRoutes()->add($newRoute);
             }
         }
@@ -177,8 +172,7 @@ class LocalizedRoute extends Route
      */
     private function setLocaleWithUriAndName(string $locale): self
     {
-        $this->locale = $locale;
-
+        $this->setLocale($locale);
         if ($this->getName()) {
             if (config('localized-routes-plus.use_countries')) {
                 if (is_array(config('localized-routes-plus.countries')[$locale])) {
@@ -240,12 +234,7 @@ class LocalizedRoute extends Route
 
                             $_prefix = $locale.$separator.$countryForLocale[$i];
 
-                            $groupStack = last($this->router->getGroupStack());
-                            if ($groupStack && isset($groupStack['prefix'])) {
-                                $copy->setUri(rtrim($_prefix.'/'.ltrim($this->uri, '/'), '/'));
-                            } else {
-                                $copy->uri = rtrim($_prefix.'/'.ltrim($this->uri, '/'), '/');
-                            }
+                            $copy->prefix($_prefix);
 
                             if ($copy->getName()) {
                                 $copy->action['as'] = str_replace('/', '-', $_prefix).'.'.$copy->getSafeName();
@@ -259,15 +248,9 @@ class LocalizedRoute extends Route
                     }
                 }
 
-                $groupStack = last($this->router->getGroupStack());
-                if ($groupStack && isset($groupStack['prefix'])) {
-                    $this->setUri(rtrim($prefix.'/'.ltrim($this->uri, '/'), '/'));
-                } else {
-                    $this->uri = rtrim($prefix.'/'.ltrim($this->uri, '/'), '/');
-                }
+                $this->prefix($prefix);
             }
         }
-
         return $this;
     }
 
