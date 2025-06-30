@@ -18,7 +18,7 @@ if (! function_exists('route_is')) {
 }
 
 if (! function_exists('localized_route')) {
-    function localized_route(string $name, array $parameters = [], bool $absolute = true, ?bool $locale = null, ?bool $country = null)
+    function localized_route(string $name, $parameters = [], bool $absolute = true, ?bool $locale = null, ?bool $country = null)
     {
         if (config('localized-routes-plus.use_countries')) {
             if (! $locale) {
@@ -34,12 +34,7 @@ if (! function_exists('localized_route')) {
             }
             $name = $locale.'.'.$name;
         }
-        $route = app('router')->getRoutes()->getByName($name);
 
-        if (! $route) {
-            return null;
-        }
-
-        return $route->getUrl();
+        return route($name, $parameters, $absolute);
     }
 }
