@@ -239,7 +239,6 @@ class LocalizedRoute extends Route
                             }
                             $copy->setCountry($countryForLocale[$i]);
 
-
                             $this->router->getRoutes()->add($copy);
                         }
                     } else {
