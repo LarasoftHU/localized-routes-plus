@@ -12,7 +12,7 @@ if (! function_exists('current_route')) {
      */
     function current_route(?string $locale = null, ?string $country = null): string
     {
-        return Route::getCurrentRoute()->getUrl($locale, $country);
+        return request()->route()->getUrl($locale, $country);
     }
 }
 
