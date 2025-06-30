@@ -22,6 +22,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         $this->app->extend('router', function ($router, $app) {
             $_router = new LocalizedRouter($app['events'], $app);
             $_router->setRoutes($router->getRoutes());
+            $_router->setCompiledRoutes($router->getCompiledRoutes());
 
             return $_router;
         });
