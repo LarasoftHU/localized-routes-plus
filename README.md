@@ -1,9 +1,9 @@
 # Laravel Localized Routes Plus
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/kapasifulop/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/kapasifulop/localized-routes-plus)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kapasifulop/localized-routes-plus/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kapasifulop/localized-routes-plus/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kapasifulop/localized-routes-plus/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kapasifulop/localized-routes-plus/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/kapasifulop/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/kapasifulop/localized-routes-plus)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/LarasoftHU/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/LarasoftHU/localized-routes-plus)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/LarasoftHU/localized-routes-plus/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/LarasoftHU/localized-routes-plus/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/LarasoftHU/localized-routes-plus/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/LarasoftHU/localized-routes-plus/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/LarasoftHU/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/LarasoftHU/localized-routes-plus)
 
 A powerful Laravel package for creating localized routes with advanced features including subdomain support, country-specific routing, and automatic locale management.
 
@@ -37,7 +37,7 @@ A powerful Laravel package for creating localized routes with advanced features 
 Install the package via Composer:
 
 ```bash
-composer require kapasifulop/localized-routes-plus
+composer require LarasoftHU/localized-routes-plus
 ```
 
 Publish the configuration file:
@@ -562,7 +562,7 @@ If you discover any security vulnerabilities, please email fulopkapasi@gmail.com
 
 ## Credits
 
-- [Kapási Fülöp](https://github.com/kapasifulop)
+- [Kapási Fülöp](https://github.com/LarasoftHU)
 - [All Contributors](../../contributors)
 
 ## License
