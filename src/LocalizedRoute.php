@@ -3,6 +3,7 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\Route;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use LarasoftHU\LocalizedRoutesPlus\Middleware\SetCountryFromRoute;
@@ -86,14 +87,12 @@ class LocalizedRoute extends Route
     public function localized(array|string $locales = []): self
     {
         $this->isLocalized = true;
-        if (is_string($locales)) {
-            $locales = [$locales];
-        }
+
         $this->middleware(SetLocaleFromRoute::class);
         if (config('localized-routes-plus.use_countries')) {
             $this->middleware(SetCountryFromRoute::class);
         }
-        $this->processLocalization($locales);
+        $this->processLocalization(Arr::wrap($locales));
 
         return $this;
     }
@@ -103,14 +102,9 @@ class LocalizedRoute extends Route
      */
     public function localizedExcept(array|string $locales = []): self
     {
-        $this->isLocalized = true;
-        if (is_string($locales)) {
-            $locales = [$locales];
-        }
+        $locales = array_diff(config('localized-routes-plus.locales'), Arr::wrap($locales));
 
-        $locales = array_diff(config('localized-routes-plus.locales'), $locales);
-
-        $this->processLocalization($locales);
+        $this->localized($locales);
 
         return $this;
     }
@@ -136,8 +130,6 @@ class LocalizedRoute extends Route
     protected function processLocalization(array $locales = []): void
     {
         $this->isProcessed = true;
-
-        $originalName = $this->action['as'] ?? null;
 
         if (count($locales) == 0) {
             $locales = config('localized-routes-plus.locales', ['en']);
