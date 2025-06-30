@@ -10,8 +10,10 @@ if (! function_exists('current_route')) {
      * @param  string|null  $fallback
      * @param  bool  $absolute
      */
-    function current_route(?string $locale = null, ?string $country = null): string
+    function current_route(?string $locale = null, ?string $country = null): ?string
     {
+        if(!request()->route()) return null;
+
         return request()->route()->getUrl($locale, $country);
     }
 }
@@ -26,6 +28,8 @@ if (! function_exists('route_is')) {
     {
         /** @var LocalizedRoute|null $route */
         $route = request()->route();
+
+        if(!$route) return false;
 
         return $route !== null && $route->is($name);
     }
