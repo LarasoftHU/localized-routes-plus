@@ -33,6 +33,11 @@ class LocalizedRouter extends Router
      */
     public function setRoutes(RouteCollection|CompiledRouteCollection $routes)
     {
+        if($routes instanceof CompiledRouteCollection) {
+            $this->setCompiledRoutes($routes->getRoutes());
+            return;
+        }
+
         foreach ($routes as $route) {
             $route->setRouter($this)->setContainer($this->container);
         }

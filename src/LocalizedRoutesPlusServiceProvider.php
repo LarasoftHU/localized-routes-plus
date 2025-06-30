@@ -19,6 +19,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
 
     public function register()
     {
+        parent::register();
         // A router-t helyesen felülírjuk a Laravel 12-ben
         $this->app->extend('router', function ($router, $app) {
             $_router = new LocalizedRouter($app['events'], $app);
@@ -32,7 +33,6 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
 
             return $_router;
         });
-        parent::register();
     }
     
 
