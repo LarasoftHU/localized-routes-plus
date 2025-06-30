@@ -14,9 +14,8 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
      *
      * @param  string  $name
      * @param  string  $controller
-     * @return \Illuminate\Routing\RouteCollection
      */
-    public function register($name, $controller, array $options = [], $locales = [])
+    public function register($name, $controller, array $options = [], $locales = []): ?RouteCollection
     {
         if (isset($options['parameters']) && ! is_array($this->parameters)) {
             $this->parameters = $options['parameters'];
@@ -27,9 +26,9 @@ class LocalizedResourceRegistrar extends ResourceRegistrar
 
         if (str_contains($name, '/')) {
             $this->prefixedResource($name, $controller, $options, $locales);
-            return;
+
+            return null;
         }
-        
 
         // We need to extract the base resource from the resource name. Nested resources
         // are supported in the framework, but we need to know what name to use for a

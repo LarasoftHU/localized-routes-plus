@@ -13,12 +13,12 @@ it('can group routes', function () {
 
     $routes = Route::getRoutes();
     foreach ($routes as $route) {
-      if ($route->getName() && str_contains($route->uri(), 'test/group')) {
-          expect($route->getLocale())->not->toBe(null);
-          $locale = $route->getLocale();
-          if($locale != config('localized-routes-plus.default_locale')) {
-            expect($route->uri())->toBe($locale.'/test/group/test');
-          }
+        if ($route->getName() && str_contains($route->uri(), 'test/group')) {
+            expect($route->getLocale())->not->toBe(null);
+            $locale = $route->getLocale();
+            if ($locale != config('localized-routes-plus.default_locale')) {
+                expect($route->uri())->toBe($locale.'/test/group/test');
+            }
         }
     }
 

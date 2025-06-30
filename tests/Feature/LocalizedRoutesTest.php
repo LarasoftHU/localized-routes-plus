@@ -284,3 +284,144 @@ test('resource routes with custom names create routes for all locales', function
     expect($routeNames)->toContain('hu.articles.list');
     expect($routeNames)->toContain('hu.articles.new');
 });
+
+test('localizedExcept creates routes for all locales except the given ones', function () {
+    // Konfigurálunk több nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu', 'de', 'fr']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot ami kizárja a 'de' és 'fr' nyelveket
+    Route::get('test-except', function () {
+        return 'test except';
+    })->name('test.except')->localizedExcept(['de', 'fr']);
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik az en.test.except route
+    expect($routes->hasNamedRoute('en.test.except'))->toBeTrue();
+
+    // Ellenőrizzük, hogy létezik a hu.test.except route is
+    expect($routes->hasNamedRoute('hu.test.except'))->toBeTrue();
+
+    // Ellenőrizzük, hogy NEM létezik a de.test.except route
+    expect($routes->hasNamedRoute('de.test.except'))->toBeFalse();
+
+    // Ellenőrizzük, hogy NEM létezik a fr.test.except route
+    expect($routes->hasNamedRoute('fr.test.except'))->toBeFalse();
+});
+
+test('localizedExcept with empty array creates routes for all locales', function () {
+    // Konfigurálunk nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu', 'de']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot ami nem zár ki semmit (üres tömb)
+    Route::get('test-no-except', function () {
+        return 'test no except';
+    })->name('test.no.except')->localizedExcept([]);
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik minden nyelvre
+    expect($routes->hasNamedRoute('en.test.no.except'))->toBeTrue();
+    expect($routes->hasNamedRoute('hu.test.no.except'))->toBeTrue();
+    expect($routes->hasNamedRoute('de.test.no.except'))->toBeTrue();
+});
+
+test('localized with specific locales creates routes only for given locales', function () {
+    // Konfigurálunk több nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu', 'de', 'fr']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot csak a 'en' és 'hu' nyelvekhez
+    Route::get('test-specific', function () {
+        return 'test specific';
+    })->name('test.specific')->localized(['en', 'hu']);
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik az en.test.specific route
+    expect($routes->hasNamedRoute('en.test.specific'))->toBeTrue();
+
+    // Ellenőrizzük, hogy létezik a hu.test.specific route is
+    expect($routes->hasNamedRoute('hu.test.specific'))->toBeTrue();
+
+    // Ellenőrizzük, hogy NEM létezik a de.test.specific route
+    expect($routes->hasNamedRoute('de.test.specific'))->toBeFalse();
+
+    // Ellenőrizzük, hogy NEM létezik a fr.test.specific route
+    expect($routes->hasNamedRoute('fr.test.specific'))->toBeFalse();
+});
+
+test('localized with single locale string creates route only for that locale', function () {
+    // Konfigurálunk több nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu', 'de']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot csak a 'hu' nyelvhez (string formában)
+    Route::get('test-single', function () {
+        return 'test single';
+    })->name('test.single')->localized('hu');
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik a hu.test.single route
+    expect($routes->hasNamedRoute('hu.test.single'))->toBeTrue();
+
+    // Ellenőrizzük, hogy NEM létezik az en.test.single route (mert nem volt a megadott nyelvek között)
+    expect($routes->hasNamedRoute('en.test.single'))->toBeFalse();
+
+    // Ellenőrizzük, hogy NEM létezik a de.test.single route
+    expect($routes->hasNamedRoute('de.test.single'))->toBeFalse();
+});
+
+test('localized with empty array creates routes for all configured locales', function () {
+    // Konfigurálunk nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot üres tömbbel (ez az alapértelmezett működés)
+    Route::get('test-empty', function () {
+        return 'test empty';
+    })->name('test.empty')->localized([]);
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik minden konfigurált nyelvre
+    expect($routes->hasNamedRoute('en.test.empty'))->toBeTrue();
+    expect($routes->hasNamedRoute('hu.test.empty'))->toBeTrue();
+});
+
+test('localizedExcept with string parameter excludes single locale', function () {
+    // Konfigurálunk nyelveket a teszteléshez
+    config()->set('localized-routes-plus.locales', ['en', 'hu', 'de']);
+    config()->set('localized-routes-plus.default_locale', 'en');
+    config()->set('localized-routes-plus.use_route_prefix_in_default_locale', false);
+
+    // Létrehozunk egy route-ot ami kizárja a 'de' nyelvet (string formában)
+    Route::get('test-except-string', function () {
+        return 'test except string';
+    })->name('test.except.string')->localizedExcept('de');
+
+    $router = app('router');
+    $routes = $router->getRoutes();
+
+    // Ellenőrizzük, hogy létezik az en.test.except.string route
+    expect($routes->hasNamedRoute('en.test.except.string'))->toBeTrue();
+
+    // Ellenőrizzük, hogy létezik a hu.test.except.string route is
+    expect($routes->hasNamedRoute('hu.test.except.string'))->toBeTrue();
+
+    // Ellenőrizzük, hogy NEM létezik a de.test.except.string route
+    expect($routes->hasNamedRoute('de.test.except.string'))->toBeFalse();
+});

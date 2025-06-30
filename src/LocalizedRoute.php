@@ -137,6 +137,10 @@ class LocalizedRoute extends Route
 
         $defaultLocale = config('localized-routes-plus.default_locale', 'en');
 
+        if (! in_array($defaultLocale, $locales)) {
+            $defaultLocale = $locales[0];
+        }
+
         $original = clone $this;
 
         // Létrehozzuk a többi locale-hoz is a route-okat
@@ -150,7 +154,7 @@ class LocalizedRoute extends Route
             }
         }
 
-        // Az eredeti route-ot átnevezzük a default locale-lal
+        // Az eredeti route-ot csak akkor állítjuk be a default locale-ra, ha az szerepel a megadott locale-ok között
         $this->setLocaleWithUriAndName($defaultLocale);
 
         $this->router->getRoutes()->refreshNameLookups();
@@ -243,6 +247,7 @@ class LocalizedRoute extends Route
                 $this->prefix($prefix);
             }
         }
+
         return $this;
     }
 
