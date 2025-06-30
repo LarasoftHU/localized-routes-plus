@@ -354,7 +354,10 @@ class LocalizedRoute extends Route
 
 
         if(!$parameters) {
-            $parameters = $this->parameters();
+            $parameters = [];
+            if(isset($this->parameters)) {
+                $parameters = $this->parameters();
+            }
         }
             
         if ($locale && ! $country) {
