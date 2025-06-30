@@ -231,6 +231,7 @@ class LocalizedRoute extends Route
 
                             $_prefix = $locale.$separator.$countryForLocale[$i];
 
+                            $copy->localizeUri();
                             $copy->prefix($_prefix);
 
                             if ($copy->getName()) {
@@ -238,7 +239,7 @@ class LocalizedRoute extends Route
                             }
                             $copy->setCountry($countryForLocale[$i]);
 
-                            $copy->localizeUri();
+
                             $this->router->getRoutes()->add($copy);
                         }
                     } else {
@@ -246,8 +247,8 @@ class LocalizedRoute extends Route
                     }
                 }
 
-                $this->prefix($prefix);
                 $this->localizeUri();
+                $this->prefix($prefix);
             }
         }
 
