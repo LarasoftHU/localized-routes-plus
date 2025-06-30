@@ -1,7 +1,7 @@
 # Laravel Localized Routes Plus
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kapasifulop/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/kapasifulop/localized-routes-plus)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kapasifulop/localized-routes-plus/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kapasifulop/localized-routes-plus/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kapasifulop/localized-routes-plus/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/kapasifulop/localized-routes-plus/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kapasifulop/localized-routes-plus/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kapasifulop/localized-routes-plus/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kapasifulop/localized-routes-plus.svg?style=flat-square)](https://packagist.org/packages/kapasifulop/localized-routes-plus)
 
