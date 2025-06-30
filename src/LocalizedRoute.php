@@ -342,7 +342,7 @@ class LocalizedRoute extends Route
     /**
      * Get the url of the route for a specific locale.
      */
-    public function getUrl($locale = null, $country = null): string
+    public function getUrl($locale = null, $country = null, $parameters = null, bool $absolute = true): string
     {
         if ($locale && ! $country && config('localized-routes-plus.use_countries')) {
             throw new InvalidArgumentException('You can not use getUrl() method without country parameter if use_countries config is true!');
@@ -360,6 +360,6 @@ class LocalizedRoute extends Route
             return route($locale.'-'.$country.'.'.$this->getSafeName());
         }
 
-        return route($this->getSafeName());
+        return route($this->getSafeName(), $parameters ?? $this->parameters(), $absolute);
     }
 }

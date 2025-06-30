@@ -8,13 +8,14 @@ if (! function_exists('current_route')) {
      * Retrieve the current route in another locale.
      *
      * @param  string|null  $fallback
-     * @param  bool  $absolute
      */
-    function current_route(?string $locale = null, ?string $country = null): ?string
+    function current_route(?string $locale = null, ?string $country = null, $parameters = null, bool $absolute = true): ?string
     {
-        if(!request()->route()) return null;
+        if (! request()->route()) {
+            return null;
+        }
 
-        return request()->route()->getUrl($locale, $country);
+        return request()->route()->getUrl($locale, $country, $parameters, $absolute);
     }
 }
 
@@ -29,7 +30,9 @@ if (! function_exists('route_is')) {
         /** @var LocalizedRoute|null $route */
         $route = request()->route();
 
-        if(!$route) return false;
+        if (! $route) {
+            return false;
+        }
 
         return $route !== null && $route->is($name);
     }
