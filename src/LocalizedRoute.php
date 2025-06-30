@@ -4,6 +4,7 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Routing\Route;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use LarasoftHU\LocalizedRoutesPlus\Middleware\SetCountryFromRoute;
@@ -237,6 +238,7 @@ class LocalizedRoute extends Route
                             }
                             $copy->setCountry($countryForLocale[$i]);
 
+                            $copy->localizeUri();
                             $this->router->getRoutes()->add($copy);
                         }
                     } else {
@@ -245,7 +247,19 @@ class LocalizedRoute extends Route
                 }
 
                 $this->prefix($prefix);
+                $this->localizeUri();
             }
+        }
+
+        return $this;
+    }
+
+    private function localizeUri(): self
+    {
+        if(Lang::has('routes.'.$this->uri(), $this->locale)) {
+            $localizedUri = Lang::get('routes', $this->locale);
+            $this->setUri($localizedUri);
+            return $this;
         }
 
         return $this;
