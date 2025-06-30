@@ -4,6 +4,8 @@ namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Routing\CompiledRouteCollection;
+use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 
 class LocalizedRouter extends Router
@@ -21,6 +23,23 @@ class LocalizedRouter extends Router
         return (new LocalizedRoute($methods, $uri, $action))
             ->setRouter($this)
             ->setContainer($this->container);
+    }
+
+    /**
+     * Set the route collection instance.
+     *
+     * @param  \Illuminate\Routing\RouteCollection  $routes
+     * @return void
+     */
+    public function setRoutes(RouteCollection|CompiledRouteCollection $routes)
+    {
+        foreach ($routes as $route) {
+            $route->setRouter($this)->setContainer($this->container);
+        }
+
+        $this->routes = $routes;
+
+        $this->container->instance('routes', $this->routes);
     }
 
     /**

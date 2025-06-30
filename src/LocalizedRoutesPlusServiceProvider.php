@@ -3,6 +3,7 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\CompiledRouteCollection;
 use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -21,15 +22,19 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
         // A router-t helyesen felülírjuk a Laravel 12-ben
         $this->app->extend('router', function ($router, $app) {
             $_router = new LocalizedRouter($app['events'], $app);
-            //$_router->setRoutes($router->getRoutes());
+
             foreach (get_object_vars($router) as $key => $value) {
                 $_router->$key = $value;
             }
+
+            $routes = $router->getRoutes();
+            $_router->setRoutes($routes);
 
             return $_router;
         });
         parent::register();
     }
+    
 
     public function boot()
     {
