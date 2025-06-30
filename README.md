@@ -37,7 +37,7 @@ A powerful Laravel package for creating localized routes with advanced features 
 Install the package via Composer:
 
 ```bash
-composer require LarasoftHU/localized-routes-plus
+composer require larasofthu/localized-routes-plus
 ```
 
 Publish the configuration file:
