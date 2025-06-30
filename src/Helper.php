@@ -1,6 +1,20 @@
 <?php
 
+use Illuminate\Routing\Route;
 use LarasoftHU\LocalizedRoutesPlus\LocalizedRoute;
+
+if (! function_exists('current_route')) {
+    /**
+     * Retrieve the current route in another locale.
+     *
+     * @param  string|null  $fallback
+     * @param  bool  $absolute
+     */
+    function current_route(?string $locale = null, ?string $country = null): string
+    {
+        return Route::getCurrentRoute()->getUrl($locale, $country);
+    }
+}
 
 if (! function_exists('route_is')) {
     /**
