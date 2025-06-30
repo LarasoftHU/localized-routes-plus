@@ -249,6 +249,8 @@ class LocalizedRoute extends Route
 
                 $this->localizeUri();
                 $this->prefix($prefix);
+            } else {
+                $this->localizeUri();
             }
         }
 
