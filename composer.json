@@ -1,5 +1,5 @@
 {
-    "name": "kapasifulop/localized-routes-plus",
+    "name": "LarasoftHU/localized-routes-plus",
     "description": "Advanced Laravel package for creating localized routes with subdomain support, country-specific routing, and automatic locale management. Supports URL prefixes, subdomains, and multi-country localization strategies.",
     "keywords": [
         "LarasoftHU",
@@ -23,7 +23,7 @@
         "locale-routing",
         "subdomain-routing"
     ],
-    "homepage": "https://github.com/kapasifulop/localized-routes-plus",
+    "homepage": "https://github.com/LarasoftHU/localized-routes-plus",
     "license": "MIT",
     "authors": [
         {
@@ -90,6 +90,6 @@
             }
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
