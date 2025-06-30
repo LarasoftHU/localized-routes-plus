@@ -256,9 +256,10 @@ class LocalizedRoute extends Route
 
     private function localizeUri(): self
     {
-        if(Lang::has('routes.'.$this->uri(), $this->locale)) {
-            $localizedUri = Lang::get('routes', $this->locale);
+        if (Lang::has('routes.'.$this->getSafeName(), $this->locale)) {
+            $localizedUri = Lang::get('routes.'.$this->getSafeName(), [], $this->locale);
             $this->setUri($localizedUri);
+
             return $this;
         }
 
@@ -316,8 +317,11 @@ class LocalizedRoute extends Route
     /**
      * Get the safe name of the route without the locale.
      */
-    public function getSafeName(): string
+    public function getSafeName(): ?string
     {
+        if (! $this->getName()) {
+            return null;
+        }
         if (! config('localized-routes-plus.use_countries')) {
             return Str::replaceFirst(
                 $this->locale.'.',
