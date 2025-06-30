@@ -21,3 +21,5 @@ yarn-error.log
 /.zed
 build
 /build/**/*
+debug/routes-v7.php
+debug
