@@ -78,6 +78,32 @@ Route::resource('posts', PostController::class)
 // hu.posts.index, hu.posts.create, hu.posts.store, etc.
 ```
 
+### Helper Functions
+
+The package provides convenient helper functions for common tasks:
+
+```php
+// Get current route in different locale
+$germanUrl = current_route('de');
+
+// Check route name (works for any locale)
+if (route_is('about')) {
+    // Current page is about page
+}
+
+// Generate localized routes
+$url = localized_route('products.show', ['product' => $product]);
+```
+
+```blade
+{{-- Language switcher in Blade --}}
+<div class="language-switcher">
+    @foreach(config('localized-routes-plus.locales') as $locale)
+        <a href="{{ current_route($locale) }}">{{ $locale }}</a>
+    @endforeach
+</div>
+```
+
 ## Configuration
 
 The configuration file (`config/localized-routes-plus.php`) contains all available options:
@@ -358,12 +384,206 @@ if ($route->is('products.index')) {
 }
 ```
 
+### Global Helper Functions
+
+The package provides convenient global helper functions:
+
+#### `current_route()`
+
+Get the current route URL in a different locale:
+
+```php
+// Get current route in German
+$germanUrl = current_route('de');
+
+// With countries - EN-US
+$usUrl = current_route('en', 'us');
+
+// With custom parameters
+$url = current_route('hu', null, ['id' => 123]);
+
+// Relative URL
+$relativeUrl = current_route('de', null, [], false);
+```
+
+#### `route_is()`
+
+Check if the current route matches a name (locale-agnostic):
+
+```php
+// Traditional Laravel way (locale-specific)
+if (request()->route()->getName() === 'en.products.index') {
+    // Only matches English version
+}
+
+// Using route_is() helper (works for any locale)
+if (route_is('products.index')) {
+    // Matches en.products.index, hu.products.index, de.products.index, etc.
+    // you can use it in balde templates see below
+}
+
+<nav class="...@if(route_is('products.index')selected@endif">...</nav>
+
+```
+
+#### `localized_route()`
+
+Generate localized route URLs:
+
+```php
+// Generate route for current locale
+$url = localized_route('products.show', ['product' => $product]);
+
+// Equivalent to:
+$locale = app()->getLocale();
+$url = route($locale . '.products.show', ['product' => $product]);
+
+// Automatic with countries (when enabled)
+$url = localized_route('products.show', ['product' => $product]);
+// Uses current locale and country automatically
+
+
+// You can add custom locale and country if you want
+$url = localized_route('products.show', ['product' => $product], $absolute, $locale, $country);
+```
+
+## Localized URI Translation
+
+The package supports translating URI segments using Laravel's language files. This allows you to have different URL structures for different locales while keeping the same route logic.
+
+### Setup
+
+Create language files for your routes in the `lang/{locale}/routes.php` files:
+
+```php
+// lang/en/routes.php
+<?php
+
+return [
+    'news.index' => '/news',
+    'products.index' => '/products',
+    'about' => '/about',
+    'contact' => '/contact',
+];
+```
+
+```php
+// lang/hu/routes.php
+<?php
+
+return [
+    'news.index' => '/hirek',
+    'products.index' => '/termekek', 
+    'about' => '/rolunk',
+    'contact' => '/kapcsolat',
+];
+```
+
+```php
+// lang/de/routes.php
+<?php
+
+return [
+    'news.index' => '/nachrichten',
+    'products.index' => '/produkte',
+    'about' => '/uber-uns',
+    'contact' => '/kontakt',
+];
+```
+
+### Usage
+
+Define your routes normally and the package will automatically use the translated URIs:
+
+```php
+// routes/web.php
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news.index')
+    ->localized();
+
+Route::get('/products', [ProductController::class, 'index'])
+    ->name('products.index')
+    ->localized();
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about')->localized();
+```
+
+### Generated Routes
+
+The above configuration will generate the following routes:
+
+```
+// English (default locale)
+GET /news -> en.news.index
+GET /products -> en.products.index  
+GET /about -> en.about
+
+// Hungarian  
+GET /hu/hirek -> hu.news.index
+GET /hu/termekek -> hu.products.index
+GET /hu/rolunk -> hu.about
+
+// German
+GET /de/nachrichten -> de.news.index
+GET /de/produkte -> de.products.index
+GET /de/uber-uns -> de.about
+```
+
+### With Route Parameters
+
+You can also translate URIs that contain parameters:
+
+```php
+// routes/web.php
+Route::get('/products/{product}', [ProductController::class, 'show'])
+    ->name('products.show')
+    ->localized();
+
+Route::get('/categories/{category}/products', [ProductController::class, 'index'])
+    ->name('categories.products')
+    ->localized();
+```
+
+```php
+// lang/hu/routes.php
+return [
+    'products.show' => '/termekek/{product}',
+    'categories.products' => '/kategoriak/{category}/termekek',
+];
+
+// lang/de/routes.php  
+return [
+    'products.show' => '/produkte/{product}',
+    'categories.products' => '/kategorien/{category}/produkte',
+];
+```
+
+### Important Notes
+
+- The translation key must match the route name exactly (use `getSafeName()` without locale prefix)
+- If no translation is found, the original URI is used
+- Parameters must be preserved in translated URIs (`{parameter}`)
+- This works with all localization strategies (prefixes, subdomains, countries)
+
 ## Blade Helpers
 
 ### Language Switcher
 
 ```blade
-{{-- Basic language switcher --}}
+{{-- Basic language switcher using helper function --}}
+<div class="language-switcher">
+    @foreach(config('localized-routes-plus.locales') as $locale)
+        @if($locale !== app()->getLocale())
+            <a href="{{ current_route($locale) }}">
+                {{ strtoupper($locale) }}
+            </a>
+        @endif
+    @endforeach
+</div>
+
+{{-- Alternative using route methods --}}
 <div class="language-switcher">
     @foreach(config('localized-routes-plus.locales') as $locale)
         @if($locale !== app()->getLocale())
@@ -376,9 +596,9 @@ if ($route->is('products.index')) {
 
 {{-- With countries --}}
 <div class="country-switcher">
-    <a href="{{ request()->route()->getUrl('en', 'us') }}">🇺🇸 US</a>
-    <a href="{{ request()->route()->getUrl('en', 'ca') }}">🇨🇦 Canada</a>
-    <a href="{{ request()->route()->getUrl('en', 'gb') }}">🇬🇧 UK</a>
+    <a href="{{ current_route('en', 'us') }}">🇺🇸 US</a>
+    <a href="{{ current_route('en', 'ca') }}">🇨🇦 Canada</a>
+    <a href="{{ current_route('en', 'gb') }}">🇬🇧 UK</a>
 </div>
 ```
 
@@ -394,6 +614,32 @@ if ($route->is('products.index')) {
 @if(request()->route() instanceof \LarasoftHU\LocalizedRoutesPlus\LocalizedRoute)
     <p>This is a localized route</p>
 @endif
+
+{{-- Using route_is() helper --}}
+@if(route_is('products.index'))
+    <p>This is the products index page (any locale)</p>
+@endif
+
+{{-- Generate links using localized_route() helper --}}
+<a href="{{ localized_route('products.show', ['product' => $product]) }}">
+    View Product
+</a>
+
+{{-- Navigation menu with active state detection --}}
+<nav>
+    <a href="{{ localized_route('home') }}" 
+       class="{{ route_is('home') ? 'active' : '' }}">
+        Home
+    </a>
+    <a href="{{ localized_route('products.index') }}" 
+       class="{{ route_is('products.*') ? 'active' : '' }}">
+        Products  
+    </a>
+    <a href="{{ localized_route('about') }}" 
+       class="{{ route_is('about') ? 'active' : '' }}">
+        About
+    </a>
+</nav>
 ```
 
 ## Testing
@@ -440,6 +686,14 @@ composer test-coverage
 | `use_countries` | `bool` | `false` | Enable country-specific routing |
 | `country_path_separator` | `string` | `'dash'` | Separator between locale and country |
 | `countries` | `array` | `[]` | Country mapping for locales |
+
+### Global Helper Functions
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `current_route($locale, $country, $parameters, $absolute)` | Get current route URL in different locale | `current_route('de')` |
+| `route_is($name)` | Check route name (locale-agnostic) | `route_is('products.index')` |
+| `localized_route($name, $parameters, $absolute, $locale, $country)` | Generate localized route URL | `localized_route('products.show', $product)` |
 
 ### Middleware
 
