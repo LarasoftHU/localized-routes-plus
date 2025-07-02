@@ -352,14 +352,13 @@ class LocalizedRoute extends Route
             throw new InvalidArgumentException('You can not use getUrl() method with country parameter if use_countries config is false!');
         }
 
-
-        if(!$parameters) {
+        if (! $parameters) {
             $parameters = [];
-            if(isset($this->parameters)) {
+            if (isset($this->parameters)) {
                 $parameters = $this->parameters();
             }
         }
-            
+
         if ($locale && ! $country) {
             return route($locale.'.'.$this->getSafeName(), $parameters, $absolute);
         }
@@ -367,7 +366,6 @@ class LocalizedRoute extends Route
         if ($locale && $country) {
             return route($locale.'-'.$country.'.'.$this->getSafeName(), $parameters, $absolute);
         }
-
 
         return route($this->getSafeName(), $parameters, $absolute);
     }

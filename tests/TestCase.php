@@ -2,6 +2,7 @@
 
 namespace LarasoftHU\LocalizedRoutesPlus\Tests;
 
+use LarasoftHU\LocalizedRoutesPlus\LocalizedRoutingServiceProvider;
 use LarasoftHU\LocalizedRoutesPlus\LocalizedRoutesPlusServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -11,6 +12,7 @@ class TestCase extends Orchestra
     {
         return [
             LocalizedRoutesPlusServiceProvider::class,
+            LocalizedRoutingServiceProvider::class,
         ];
     }
 
