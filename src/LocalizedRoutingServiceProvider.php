@@ -22,8 +22,5 @@ class LocalizedRoutingServiceProvider extends RoutingServiceProvider
     public function register(): void
     {
         parent::register();
-
-        // Újra regisztráljuk a routert a testreszabott verziónkkal
-        $this->registerRouter();
     }
 }
