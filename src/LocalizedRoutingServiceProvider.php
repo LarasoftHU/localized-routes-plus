@@ -44,10 +44,6 @@ class LocalizedRoutingServiceProvider extends RoutingServiceProvider
         $this->app->extend('router', function ($router, $app) {
             $_router = new LocalizedRouter($app['events'], $app);
 
-            foreach (get_object_vars($router) as $key => $value) {
-                $_router->$key = $value;
-            }
-
             $this->copyAllProperties($router, $_router);
             $_router->setRoutes($router->getRoutes());
 
