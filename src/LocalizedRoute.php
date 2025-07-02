@@ -45,7 +45,19 @@ class LocalizedRoute extends Route
      */
     public function getLocale(): ?string
     {
-        return $this->locale ?? null;
+        if ($this->locale) {
+            return $this->locale;
+        }
+
+        if ($this->getName()) {
+            if (config('localized-routes-plus.use_countries')) {
+                return explode('-', explode('.', $this->getName())[0])[0];
+            }
+
+            return explode('.', $this->getName())[0];
+        }
+
+        return null;
     }
 
     /**
@@ -65,7 +77,17 @@ class LocalizedRoute extends Route
      */
     public function getCountry(): ?string
     {
-        return $this->country ?? null;
+        if ($this->country) {
+            return $this->country;
+        }
+
+        if ($this->getName()) {
+            if (config('localized-routes-plus.use_countries')) {
+                return explode('-', explode('.', $this->getName())[0])[1];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -326,13 +348,13 @@ class LocalizedRoute extends Route
         }
         if (! config('localized-routes-plus.use_countries')) {
             return Str::replaceFirst(
-                $this->locale.'.',
+                $this->getLocale().'.',
                 '',
                 $this->action['as']
             );
         } else {
             return Str::replaceFirst(
-                $this->locale.'-'.$this->country.'.',
+                $this->getLocale().'-'.$this->getCountry().'.',
                 '',
                 $this->action['as']
             );

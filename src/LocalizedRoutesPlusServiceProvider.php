@@ -3,6 +3,8 @@
 namespace LarasoftHU\LocalizedRoutesPlus;
 
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\CompiledRouteCollection;
+use Illuminate\Routing\Router;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,6 +21,7 @@ class LocalizedRoutesPlusServiceProvider extends PackageServiceProvider
     {
         parent::register();
     }
+    
 
     public function boot()
     {
