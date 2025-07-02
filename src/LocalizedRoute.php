@@ -200,10 +200,10 @@ class LocalizedRoute extends Route
                 } else {
                     $country = config('localized-routes-plus.countries')[$locale];
                 }
-                $this->action['as'] = $this->locale.'-'.$country.'.'.$this->action['as'];
+                $this->action['as'] = $this->getLocale().'-'.$country.'.'.$this->action['as'];
                 $this->setCountry($country);
             } else {
-                $this->action['as'] = $this->locale.'.'.$this->action['as'];
+                $this->action['as'] = $this->getLocale().'.'.$this->action['as'];
             }
         }
 
@@ -240,7 +240,7 @@ class LocalizedRoute extends Route
             ) {
                 // Fix: Properly handle root URI ('/') to avoid double slashes
 
-                $prefix = $this->locale;
+                $prefix = $this->getLocale();
 
                 if (config('localized-routes-plus.use_countries')) {
                     $separator = config('localized-routes-plus.country_path_separator') == 'dash' ? '-' : '/';
@@ -280,8 +280,8 @@ class LocalizedRoute extends Route
 
     private function localizeUri(): self
     {
-        if (Lang::has('routes.'.$this->getSafeName(), $this->locale, false)) {
-            $localizedUri = Lang::get('routes.'.$this->getSafeName(), [], $this->locale, false);
+        if (Lang::has('routes.'.$this->getSafeName(), $this->getLocale(), false)) {
+            $localizedUri = Lang::get('routes.'.$this->getSafeName(), [], $this->getLocale(), false);
             $this->setUri($localizedUri);
 
             return $this;
@@ -297,7 +297,7 @@ class LocalizedRoute extends Route
      */
     public function locale($locale = null, $country = null): ?LocalizedRoute
     {
-        if (! $this->locale) {
+        if (! $this->getLocale()) {
             throw new InvalidArgumentException('Route is not localized so you can not use locale() method!');
         }
 
@@ -331,7 +331,7 @@ class LocalizedRoute extends Route
      */
     public function is($name): bool
     {
-        if ($this->locale) {
+        if ($this->getLocale()) {
             return $this->getSafeName() == $name;
         }
 
