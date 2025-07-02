@@ -7,11 +7,7 @@ if (! function_exists('current_route')) {
     /**
      * Retrieve the current route in another locale.
      *
-     * @param  string|null  $locale
-     * @param  string|null  $country
      * @param  array|null  $parameters
-     * @param  bool  $absolute
-     * @return string|null
      */
     function current_route(?string $locale = null, ?string $country = null, $parameters = null, bool $absolute = true): ?string
     {
