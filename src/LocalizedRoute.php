@@ -195,7 +195,9 @@ class LocalizedRoute extends Route
             }
 
             $newRoute = clone $original;
-            $newRoute->action = '\Illuminate\Routing\RedirectController';
+            $newRoute->action['uses'] = '\Illuminate\Routing\RedirectController';
+            $newRoute->action['controller'] = $newRoute->action['uses'];
+            $newRoute->action['as'] = 'redirect-to-'.$defaultLocale;
             $newRoute->defaults('destination', $redirectTarget)->defaults('status', 302);
             $this->router->getRoutes()->add($newRoute);
         }
