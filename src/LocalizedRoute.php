@@ -176,7 +176,7 @@ class LocalizedRoute extends Route
                 $this->router->getRoutes()->add($newRoute);
             }
         }
-
+        
         // Ha az eredeti URI '/' és a use_route_prefix_in_default_locale true, akkor redirect route-ot hozunk létre
         if ($original->uri == '/' && config('localized-routes-plus.use_route_prefix_in_default_locale')) {
             // Meghatározzuk a redirect célpontját
