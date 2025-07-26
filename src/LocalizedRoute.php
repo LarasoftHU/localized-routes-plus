@@ -195,18 +195,24 @@ class LocalizedRoute extends Route
             }
 
             $newRoute = clone $original;
-            $newRoute->action['uses'] = '\Illuminate\Routing\RedirectController';
+            $newRoute->action['uses'] = '\Illuminate\Routing\RedirectController@__invoke';
             $newRoute->action['controller'] = $newRoute->action['uses'];
             $newRoute->action['as'] = 'redirect-to-'.$defaultLocale;
+            $newRoute->action['middleware'] = ['web'];
+            $newRoute->uri = '';
+            $newRoute->isLocalized = false;
+            $newRoute->isProcessed = false;
             $newRoute->defaults('destination', $redirectTarget)->defaults('status', 302);
-            $this->router->getRoutes()->add($newRoute);
         }
 
         // Az eredeti route-ot csak akkor állítjuk be a default locale-ra, ha az szerepel a megadott locale-ok között
         $this->setLocaleWithUriAndName($defaultLocale);
-
         $this->router->getRoutes()->refreshNameLookups();
         $this->router->getRoutes()->refreshActionLookups();
+
+        if ($newRoute) {
+            $this->router->getRoutes()->add($newRoute);
+        }
     }
 
     /**
