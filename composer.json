@@ -1,7 +1,7 @@
 {
     "name": "larasofthu/localized-routes-plus",
     "description": "Advanced Laravel package for creating localized routes with subdomain support, country-specific routing, and automatic locale management. Supports URL prefixes, subdomains, and multi-country localization strategies.",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "keywords": [
         "LarasoftHU",
         "laravel",
