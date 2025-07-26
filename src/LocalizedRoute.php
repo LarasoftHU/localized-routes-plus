@@ -2,7 +2,6 @@
 
 namespace LarasoftHU\LocalizedRoutesPlus;
 
-use Illuminate\Routing\RedirectController;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Lang;
@@ -178,7 +177,6 @@ class LocalizedRoute extends Route
             }
         }
 
-
         // Ha az eredeti URI '/' és a use_route_prefix_in_default_locale true, akkor redirect route-ot hozunk létre
         if ($original->uri == '/' && config('localized-routes-plus.use_route_prefix_in_default_locale')) {
             // Meghatározzuk a redirect célpontját
@@ -197,9 +195,8 @@ class LocalizedRoute extends Route
             }
 
             $newRoute = clone $original;
-            $newRoute->action['as'] = 'redirect-to-'.$defaultLocale;
-            $newRoute->setUri($redirectTarget);
-            $newRoute->setAction(['uses' => RedirectController::class.'@redirect']);
+            $newRoute->action = '\Illuminate\Routing\RedirectController';
+            $newRoute->defaults('destination', $redirectTarget)->defaults('status', 302);
             $this->router->getRoutes()->add($newRoute);
         }
 
