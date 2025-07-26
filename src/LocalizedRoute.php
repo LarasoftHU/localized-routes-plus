@@ -182,6 +182,30 @@ class LocalizedRoute extends Route
 
         $this->router->getRoutes()->refreshNameLookups();
         $this->router->getRoutes()->refreshActionLookups();
+
+        // Ha az eredeti URI '/' és a use_route_prefix_in_default_locale true, akkor redirect route-ot hozunk létre
+        if ($original->uri == '/' && config('localized-routes-plus.use_route_prefix_in_default_locale')) {
+            // Meghatározzuk a redirect célpontját
+            $redirectTarget = '/';
+
+            if (config('localized-routes-plus.use_countries')) {
+                $country = config('localized-routes-plus.countries')[$defaultLocale];
+                if (is_array($country)) {
+                    $country = $country[0];
+                }
+
+                $separator = config('localized-routes-plus.country_path_separator') == 'dash' ? '-' : '/';
+                $redirectTarget = '/'.$defaultLocale.$separator.$country;
+            } else {
+                $redirectTarget = '/'.$defaultLocale;
+            }
+
+            // Létrehozzuk a redirect route-ot
+            $this->router->redirect('/', $redirectTarget);
+        }
+
+        $this->router->getRoutes()->refreshNameLookups();
+        $this->router->getRoutes()->refreshActionLookups();
     }
 
     /**
